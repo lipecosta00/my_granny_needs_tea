@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.3"
+
+jobs:
+  test-and-export:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install export templates for the container user
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/ || true
+
+      - name: Import project (builds class cache)
+        run: godot --headless --path . --import
+
+      - name: Unit tests
+        run: godot --headless --path . -s tests/run_tests.gd
+
+      - name: Baked maps are up to date
+        # Fails if someone edited a layout or the bake tool without re-baking.
+        run: |
+          godot --headless --path . -s tools/bake_maps.gd
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git diff --exit-code -- src/world
+
+      - name: Export Web (single-threaded)
+        run: |
+          mkdir -p build/web
+          godot --headless --path . --export-release "Web" build/web/index.html
+          test -f build/web/index.wasm
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: build/web
+          retention-days: 14
+
+  deploy-itch:
+    # Draft page on itch.io from day one (GDD "Marcos"). Configure:
+    #   secret   BUTLER_API_KEY  (itch.io > Settings > API keys)
+    #   variable ITCH_TARGET     e.g. <user>/my-granny-needs-tea:html5
+    needs: test-and-export
+    if: github.ref == 'refs/heads/main' && vars.ITCH_TARGET != ''
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: build/web
+      - name: Push to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: butler push build/web "${{ vars.ITCH_TARGET }}" --userversion "${GITHUB_SHA::7}"

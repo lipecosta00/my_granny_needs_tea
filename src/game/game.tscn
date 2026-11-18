@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://src/world/maps/dark_forest/dark_forest.tscn" id="2_forest"]
+[ext_resource type="PackedScene" path="res://src/actors/hero/hero.tscn" id="3_hero"]
+[ext_resource type="Script" path="res://src/core/follow_camera.gd" id="4_camera"]
+
+[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera")]
+script = ExtResource("1_game")
+start_map = ExtResource("2_forest")
+hero = NodePath("Hero")
+camera = NodePath("Camera")
+
+[node name="Hero" parent="." instance=ExtResource("3_hero")]
+
+[node name="Camera" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+script = ExtResource("4_camera")
