@@ -42,7 +42,6 @@ const PROPS := {
 	"b": [Src.TOWN, Vector2i(5, 0), ROUND, false],   # bush
 	"r": [Src.FARM, Vector2i(5, 7), ROUND, false],   # rock
 	"s": [Src.TOWN, Vector2i(11, 6), ROUND, false],  # sign
-	"c": [Src.DUNGEON, Vector2i(5, 7), ROUND, false],  # chest (secret clearing)
 	"\"": [Src.FARM, Vector2i(8, 6), [], false],     # tall grass (placeholder art)
 }
 ## Enemy spawn markers: char -> EnemyCatalog id (ground under them is grass).
@@ -64,6 +63,11 @@ const MAPS := [
 		"gates": [
 			{"id": &"dark_forest/bosque_darkness", "ability": &"light", "rect": Rect2i(0, 15, 3, 4)},
 		],
+		# Chests: weapon rewards. The staff moves to the Bosque in 4d.
+		"chests": [
+			{"id": &"dark_forest/secret_clearing", "cell": Vector2i(39, 6), "item": &"axe"},
+			{"id": &"dark_forest/staff_temp", "cell": Vector2i(42, 14), "item": &"staff"},
+		],
 	},
 ]
 
@@ -73,6 +77,7 @@ const MAPS := [
 ## static references would drag those scripts into that early compile.
 const GAME_MAP_SCRIPT := "res://src/world/game_map.gd"
 const PET_GATE_SCRIPT := "res://src/world/pet_gate.gd"
+const CHEST_SCRIPT := "res://src/world/chest.gd"
 const DEFAULT_SPAWN := "Default"  # GameMap.DEFAULT_SPAWN
 
 
@@ -232,6 +237,14 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 			marker.position = _feet_position(entry[0])
 			marker.set_meta(&"enemy", entry[1])
 			_own(root, enemies, marker)
+
+	for chest_spec: Dictionary in spec.get("chests", []):
+		var chest: StaticBody2D = load(CHEST_SCRIPT).new()
+		chest.name = "Chest_" + String(chest_spec.id).get_file().to_pascal_case()
+		chest.chest_id = chest_spec.id
+		chest.item = chest_spec.item
+		chest.position = _feet_position(chest_spec.cell)
+		_own(root, world, chest)
 
 	var gate_specs: Array = spec.get("gates", [])
 	if not gate_specs.is_empty():

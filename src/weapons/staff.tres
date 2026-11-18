@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/weapons/weapon_data.gd" id="1_weapon"]
+
+[resource]
+script = ExtResource("1_weapon")
+id = &"staff"
+display_name = "Cajado azul"
+sprite_region = Rect2(160, 160, 16, 16)
+normal_kind = 1
+damage = 1
+swing_arc_degrees = 40.0
+swing_duration = 0.12
+recovery = 0.12
+knockback = 80.0
+charged_kind = 2
+charged_damage = 2
+charge_time = 0.6
+charged_knockback = 120.0
+projectile_speed = 200.0
+projectile_lifetime = 0.6
+projectile_color = Color(0.5, 0.75, 1, 1)
+fan_count = 3
+fan_spread_degrees = 30.0

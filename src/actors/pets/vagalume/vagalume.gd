@@ -12,10 +12,13 @@ extends Pet
 
 
 func _auto_attack(target: Node2D) -> void:
-	var spark := Spark.new()
+	var spark := Projectile.new()
+	spark.team = HitData.Team.HERO
 	spark.target = target
+	spark.turn_rate = 9.0
 	spark.speed = spark_speed
 	spark.damage = spark_damage
+	spark.from_pet = true
 	spark.source = self
 	spark.color = color
 	spark.global_position = global_position + visual.position

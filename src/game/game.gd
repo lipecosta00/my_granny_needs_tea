@@ -9,6 +9,7 @@ extends Node
 @export var camera: FollowCamera
 @export var hearts: HeartsBar
 @export var pet_portrait: PetPortrait
+@export var weapon_slots: WeaponSlots
 ## Seconds the defeated hero stays on screen before respawning.
 @export var respawn_delay := 1.2
 
@@ -22,6 +23,11 @@ func _ready() -> void:
 	hero.died.connect(_on_hero_died)
 	if hearts:
 		hearts.bind(hero.health)
+	_sync_weapons_from_state()
+	GameState.changed.connect(_sync_weapons_from_state)
+	hero.weapons_changed.connect(_on_hero_weapons_changed)
+	if weapon_slots:
+		weapon_slots.bind(hero)
 	set_active_pet(GameState.active_pet)
 	if start_map:
 		load_map(start_map)
@@ -49,6 +55,23 @@ func load_map(scene: PackedScene, spawn_name: StringName = GameMap.DEFAULT_SPAWN
 	camera.set_bounds(current_map.get_bounds())
 	camera.global_position = hero.global_position
 	camera.reset_smoothing()
+
+
+## GameState is the source of truth for the inventory; the hero mirrors it.
+func _sync_weapons_from_state() -> void:
+	hero.owned_weapons = WeaponCatalog.ordered(GameState.owned_weapons)
+	var primary := WeaponCatalog.get_weapon(GameState.equipped_weapons[0])
+	var secondary := WeaponCatalog.get_weapon(GameState.equipped_weapons[1])
+	if primary != hero.primary_weapon or secondary != hero.secondary_weapon:
+		hero.primary_weapon = primary
+		hero.secondary_weapon = secondary
+		hero.weapons_changed.emit(primary, secondary)
+
+
+func _on_hero_weapons_changed(primary: WeaponData, secondary: WeaponData) -> void:
+	var ids := [primary.id if primary else &"", secondary.id if secondary else &""]
+	if ids != GameState.equipped_weapons:
+		GameState.set_equipped(ids[0], ids[1])
 
 
 ## Swaps the companion (granny's cauldron calls this in Milestone 4).

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
 [ext_resource type="PackedScene" path="res://src/world/maps/dark_forest/dark_forest.tscn" id="2_forest"]
@@ -6,14 +6,16 @@
 [ext_resource type="Script" path="res://src/core/follow_camera.gd" id="4_camera"]
 [ext_resource type="Script" path="res://src/ui/hearts_bar.gd" id="5_hearts"]
 [ext_resource type="Script" path="res://src/ui/pet_portrait.gd" id="6_portrait"]
+[ext_resource type="Script" path="res://src/ui/weapon_slots.gd" id="7_slots"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera", "hearts", "pet_portrait")]
+[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera", "hearts", "pet_portrait", "weapon_slots")]
 script = ExtResource("1_game")
 start_map = ExtResource("2_forest")
 hero = NodePath("Hero")
 camera = NodePath("Camera")
 hearts = NodePath("Hud/Hearts")
 pet_portrait = NodePath("Hud/PetPortrait")
+weapon_slots = NodePath("Hud/WeaponSlots")
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 
@@ -41,3 +43,12 @@ offset_top = 20.0
 offset_right = 23.0
 offset_bottom = 40.0
 script = ExtResource("6_portrait")
+
+[node name="WeaponSlots" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 26.0
+offset_top = 21.0
+offset_right = 66.0
+offset_bottom = 39.0
+script = ExtResource("7_slots")

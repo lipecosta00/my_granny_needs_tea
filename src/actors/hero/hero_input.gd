@@ -9,7 +9,9 @@ extends RefCounted
 
 ## Discrete presses captured from events (pet_ability is not buffered, the
 ## hero forwards it to the pet right away).
-const PRESS_ACTIONS: Array[StringName] = [&"attack_primary", &"attack_secondary", &"roll", &"pet_ability"]
+const PRESS_ACTIONS: Array[StringName] = [
+	&"attack_primary", &"attack_secondary", &"roll", &"pet_ability", &"interact",
+]
 
 var _pending: Array[StringName] = []
 

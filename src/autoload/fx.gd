@@ -28,6 +28,8 @@ const SFX_VOICES := 8
 ## Headless tests step physics frame by frame; a frozen time scale would
 ## desync them, so they switch hitstop off.
 var hitstop_enabled := true
+## Time scale outside hitstop (the weapon wheel slows the game to 20%).
+var base_time_scale := 1.0
 ## Headless runs use a dummy audio driver that never releases playbacks.
 var sfx_enabled := true
 
@@ -68,8 +70,14 @@ func hitstop(duration: float) -> void:
 	Engine.time_scale = 0.0
 	await get_tree().create_timer(duration, true, false, true).timeout
 	if serial == _hitstop_serial:
-		Engine.time_scale = 1.0
+		Engine.time_scale = base_time_scale
 		_hitstop_until_ms = 0
+
+
+func set_base_time_scale(value: float) -> void:
+	base_time_scale = value
+	if _hitstop_until_ms == 0 or Time.get_ticks_msec() >= _hitstop_until_ms:
+		Engine.time_scale = value
 
 
 func shake(trauma: float) -> void:
