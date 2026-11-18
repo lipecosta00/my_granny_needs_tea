@@ -11,8 +11,8 @@ const BUTTON_DEADZONE := 0.5
 
 ## action -> { keys, joy_buttons, joy_axes: [[axis, direction]], deadzone }
 const BINDINGS := {
-	# Movement: left stick + WASD/arrows. D-pad is reserved for souls/potion
-	# (see GDD "Controles"), so it does not move the hero.
+	# Movement: left stick + WASD/arrows. The D-pad never moves the hero
+	# (GDD "Controles"): up = potion, left/right free (pets swap at granny's).
 	"move_left": {"keys": [KEY_A, KEY_LEFT], "joy_axes": [[JOY_AXIS_LEFT_X, -1.0]], "deadzone": MOVE_DEADZONE},
 	"move_right": {"keys": [KEY_D, KEY_RIGHT], "joy_axes": [[JOY_AXIS_LEFT_X, 1.0]], "deadzone": MOVE_DEADZONE},
 	"move_up": {"keys": [KEY_W, KEY_UP], "joy_axes": [[JOY_AXIS_LEFT_Y, -1.0]], "deadzone": MOVE_DEADZONE},
@@ -22,15 +22,19 @@ const BINDINGS := {
 	"roll": {"keys": [KEY_SPACE], "joy_buttons": [JOY_BUTTON_B]},
 	"interact": {"keys": [KEY_E], "joy_buttons": [JOY_BUTTON_A]},
 	"weapon_wheel": {"keys": [KEY_Q], "joy_buttons": [JOY_BUTTON_LEFT_SHOULDER]},
-	"soul_ability": {"keys": [KEY_R], "joy_buttons": [JOY_BUTTON_RIGHT_SHOULDER]},
-	"soul_prev": {"keys": [KEY_1], "joy_buttons": [JOY_BUTTON_DPAD_LEFT]},
-	"soul_next": {"keys": [KEY_2], "joy_buttons": [JOY_BUTTON_DPAD_RIGHT]},
+	"pet_ability": {"keys": [KEY_R], "joy_buttons": [JOY_BUTTON_RIGHT_SHOULDER]},
 	"potion": {"keys": [KEY_F], "joy_buttons": [JOY_BUTTON_DPAD_UP]},
 	"pause": {"keys": [KEY_ESCAPE], "joy_buttons": [JOY_BUTTON_START]},
 }
 
 
 func _init() -> void:
+	# Drop actions removed from the table so stale bindings don't linger.
+	for property in ProjectSettings.get_property_list():
+		var key: String = property.name
+		if key.begins_with("input/") and not key.trim_prefix("input/") in BINDINGS \
+				and not key.trim_prefix("input/").begins_with("ui_"):
+			ProjectSettings.set_setting(key, null)
 	for action: String in BINDINGS:
 		var spec: Dictionary = BINDINGS[action]
 		var events: Array[InputEvent] = []

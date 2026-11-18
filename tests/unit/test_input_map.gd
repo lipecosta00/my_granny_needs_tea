@@ -4,7 +4,7 @@ extends "res://tests/test_case.gd"
 const GAMEPLAY_ACTIONS := [
 	"move_left", "move_right", "move_up", "move_down",
 	"attack_primary", "attack_secondary", "roll", "interact",
-	"weapon_wheel", "soul_ability", "soul_prev", "soul_next", "potion", "pause",
+	"weapon_wheel", "pet_ability", "potion", "pause",
 ]
 const MOVE_ACTIONS := ["move_left", "move_right", "move_up", "move_down"]
 
@@ -38,6 +38,15 @@ func test_nothing_bound_to_triggers() -> void:
 				assert_false(
 					event.axis in [JOY_AXIS_TRIGGER_LEFT, JOY_AXIS_TRIGGER_RIGHT],
 					"%s is bound to a trigger" % action)
+
+
+func test_dpad_never_moves_hero() -> void:
+	for action in MOVE_ACTIONS:
+		for event in InputMap.action_get_events(action):
+			if event is InputEventJoypadButton:
+				assert_false(
+					event.button_index in [JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT],
+					"%s bound to D-pad" % action)
 
 
 func test_bindings_apply_to_any_device() -> void:

@@ -4,11 +4,11 @@ Nov 17, 2026 · @Felipe Costa
 
 ## Visão geral
 
-My granny needs tea é um action RPG top-down curto, em pixel art, feito para gamepad e publicado em HTML5 no itch.io. O neto sai para buscar os ingredientes do "chazinho" da vó e, pelo caminho, liberta almas que passam a lutar ao lado dele.
+My granny needs tea é um action RPG top-down curto, em pixel art, feito para gamepad e publicado em HTML5 no itch.io. O neto sai para buscar os materiais que a vó pede para o "chazinho" e, a cada entrega, ela usa o caldeirão para trazer à vida um novo pet que luta ao lado dele.
 
 | Item | Definição |
 | --- | --- |
-| Gênero | Action RPG top-down com companheiros: combate estilo Zelda, coleção de almas com cara de Pokémon |
+| Gênero | Action RPG top-down com pet companheiro: combate estilo Zelda, pets criados pela vó com cara de Pokémon |
 | Plataforma | Navegador (HTML5) no itch.io. Versão desktop fica pra depois |
 | Controle | Gamepad (Xbox e PlayStation). Teclado como alternativa |
 | Engine | Godot 4 com GDScript, renderer Compatibility |
@@ -21,29 +21,42 @@ My granny needs tea é um action RPG top-down curto, em pixel art, feito para ga
 
 Toda decisão do MVP passa por estes quatro pilares. O que não serve a nenhum deles fica de fora.
 
-1. **Lutar em dupla.** O jogador controla o herói com precisão e a alma age sozinha. A graça está na sinergia: a alma atordoa, o herói finaliza.
-2. **Cada alma abre o mundo.** Toda alma conquistada tem uma habilidade que destrava a próxima área. A coleção tem propósito, não é álbum.
+1. **Lutar em dupla.** O jogador controla o herói com precisão e o pet age sozinho. A graça está na sinergia: o pet atordoa, o herói finaliza.
+2. **Cada pet abre o mundo.** Todo pet que a vó cria tem uma habilidade que destrava a próxima área, e escolher qual levar antes de sair é uma decisão. A coleção tem propósito, não é álbum.
 3. **Gostoso no controle.** Resposta imediata, rolamento confiável e feedback forte em cada golpe. Se não for bom no gamepad, não entra.
 4. **Fofo e sombrio.** Visual de Pokémon de GBA com paleta de outono e noite, e humor no contraste: a vó é claramente uma bruxa e ninguém comenta.
 
 ## História e tom
 
-Uma tarefa boba de neto, buscar ingredientes para o chá da vó, vira uma jornada por floresta, pântano e cemitério cheios de almas que não voltaram.
+Uma tarefa boba de neto, buscar ingredientes para o chá da vó, vira uma rotina de expedições por floresta, pântano e cemitério. A cada entrega, a vó joga os materiais no caldeirão, faz uma "magiquinha" e traz à vida um novo pet. Ela continua jurando que é tudo para o chá.
 
 1. **Casa.** O protagonista acorda e, ao sair do quarto, a mãe chama. Ela pede que ele vá até a casa da vó.
-2. **Casa da vó.** A casa é "mal-assombrada" e a vó parece uma bruxa. Ela pede três itens para um "chazinho": **cogumelo**, **musgo de árvore morta** e **osso**.
-3. **Floresta Escura.** Os três itens estão em áreas diferentes, cada uma mais difícil. Pelo caminho, o jogador liberta almas que viram companheiras.
-4. **Volta.** Com os três itens, o jogador retorna e a vó prepara o chá.
+2. **Casa da vó.** A casa é "mal-assombrada" e a vó parece uma bruxa. Ela dá o primeiro pet, a **Vagalume**, e faz o primeiro pedido de material para o "chazinho".
+3. **Expedições.** Cada pedido da vó é uma quest: um material numa área da Floresta Escura, cada área mais difícil. Antes de sair, o jogador escolhe qual pet leva.
+4. **Caldeirão.** Na volta, a vó recebe o material, faz a magiquinha e um novo pet fica disponível. **Os pets só podem ser trocados na casa da vó.**
+5. **O chá.** Com o último material, o **osso** do Coveiro, a vó finalmente prepara o "chá" no caldeirão.
 
-**Tom:** humor de contraste. Ninguém estranha a vó bruxa, e o "chazinho" claramente é uma poção. O medo nunca é pesado: o susto vem do clima, não de gore.
+**Pedidos da vó**
 
-**Em aberto:** o final. Proposta: as almas libertadas são de parentes que a vó tentava trazer de volta, e o "chazinho" era o ritual para isso. Dá um fechamento agridoce e uma segunda leitura para o título: a vó nunca precisou do chá, precisava deles.
+| Pedido | Material | Área | Pet que abre o caminho | Recompensa |
+| --- | --- | --- | --- | --- |
+| 1 | Cogumelo | Bosque dos Cogumelos | Vagalume (luz no bosque sombrio) | Barqueira |
+| 2 | Musgo de árvore morta | Pântano | Barqueira (ponte de névoa no canal) | Em aberto (ver abaixo) |
+| 3 | Osso | Cemitério (chefe) | Barqueira (ponte até o cemitério) | O chá (final) |
+
+**Tom:** humor de contraste. Ninguém estranha a vó bruxa, ninguém estranha que o "chá" cria bichos, e o "chazinho" claramente é uma poção. O medo nunca é pesado: o susto vem do clima, não de gore.
+
+**Em aberto**
+
+- **Recompensa do pedido 2.** (A) Um terceiro pet, que deixa o loop "cada entrega vira um pet" completo, mas soma um pet ao escopo. (B) Manter dois pets e o musgo melhorar um pet existente. Proposta: (A), com o terceiro pet abrindo o cemitério no lugar da Barqueira.
+- **Portão aberto fica aberto (proposta).** Depois que um pet abre um caminho (ponte, área iluminada), ele continua aberto. Assim a troca de pet é uma escolha de combate e não obriga idas e voltas.
+- **O final.** Proposta: os pets são almas de parentes (ou dos bichos da família) que a vó está trazendo de volta, e o "chá" é o último passo do ritual. Dá um fechamento agridoce e uma segunda leitura para o título: a vó nunca precisou do chá, precisava deles.
 
 ## Loop principal
 
 &#91;embedded content: loop principal · 5 etapas que se repetem\]
 
-O jogador explora uma rota, luta em dupla, liberta uma alma ou pega um item, e a habilidade nova abre a próxima área, sempre um pouco mais difícil. Uma volta completa leva de 8 a 12 minutos.
+A vó faz um pedido, o jogador escolhe o pet na casa dela, explora a rota lutando em dupla, pega o material e volta. A vó cria um novo pet, e a habilidade dele abre a próxima área, sempre um pouco mais difícil. Uma volta completa leva de 8 a 12 minutos.
 
 ## Controles no gamepad
 
@@ -51,16 +64,17 @@ O jogo é pensado para o controle primeiro: tudo cabe nas mãos sem tirar o pole
 
 | Ação | Xbox | PlayStation | Teclado |
 | --- | --- | --- | --- |
-| Andar | Analógico esq. / D-pad | Analógico esq. / D-pad | WASD |
+| Andar | Analógico esq. | Analógico esq. | WASD / setas |
 | Atacar com a arma do slot I (segurar = carregado) | X | Quadrado | J |
 | Atacar com a arma do slot II (segurar = carregado) | Y | Triângulo | K |
 | Rolar (com invencibilidade) | B | Círculo | Espaço |
 | Interagir, falar, pegar | A | X | E |
 | Abrir a roda de armas (segurar) | LB | L1 | Q |
-| Habilidade da alma selecionada | RB | R1 | R |
-| Trocar alma selecionada | D-pad ← → (com a roda fechada) | D-pad ← → | 1 e 2 |
+| Habilidade do pet | RB | R1 | R |
 | Usar poção | D-pad ↑ | D-pad ↑ | F |
 | Pausa | Start / Menu | Options | Esc |
+
+O D-pad não move o herói. A troca de pet acontece só na casa da vó, então D-pad ← → ficam livres no MVP.
 
 **Roda de armas.** Segurar LB desacelera o tempo para 20%, abre a roda em volta do herói e o analógico esquerdo escolhe a arma. Com a arma destacada, apertar X ou Y equipa no slot correspondente. Soltar LB fecha a roda e o tempo volta ao normal.
 
@@ -73,7 +87,7 @@ O jogo é pensado para o controle primeiro: tudo cabe nas mãos sem tirar o pole
 
 ## Combate
 
-O herói luta com duas armas equipadas e as almas atacam sozinhas, herdando o combate automático do Unreturned Souls, jogo anterior do mesmo autor. Os números abaixo são valores iniciais de ajuste, todos expostos com `@export` para calibrar jogando.
+O herói luta com duas armas equipadas e o pet ataca sozinho, herdando o combate automático do Unreturned Souls, jogo anterior do mesmo autor. Os números abaixo são valores iniciais de ajuste, todos expostos com `@export` para calibrar jogando.
 
 **Herói**
 
@@ -90,31 +104,33 @@ O herói luta com duas armas equipadas e as almas atacam sozinhas, herdando o co
 | Machado | Tiny Dungeon (11,9) | Arco largo e lento, 2 de dano | Giro de 360°, 3 de dano | Grupos de inimigos |
 | Cajado azul | Tiny Dungeon (10,10) | Projétil em linha, 1 de dano | Três projéteis em leque | Distância, inimigos voadores |
 
-**Sinergia herói + alma**
+**Sinergia herói + pet**
 
-- O inimigo **atordoado** por uma alma recebe dano dobrado do herói.
+- O inimigo **atordoado** recebe dano dobrado do herói (pelo pet, por bater numa parede ou por outra mecânica).
 - O inimigo **empurrado** contra uma parede fica atordoado por 1 s.
 - O ataque carregado que acerta um inimigo atordoado gera um efeito de impacto maior (pausa de 0,1 s e tremor de tela).
 
 **Feedback de cada golpe:** pausa de impacto de 0,06 s, flash branco no alvo, recuo, número de dano subindo (dígitos do Tiny Battle), partículas e som. Ninguém deve ter dúvida se acertou.
 
-## Almas
+## Pets
 
-O MVP tem duas almas. Cada uma tem um ataque automático, uma habilidade de combate e uma habilidade de exploração que abre a próxima área. As duas seguem o herói ao mesmo tempo, e o RB usa a habilidade da selecionada.
+Os pets são criaturas espectrais que a vó traz à vida no caldeirão. Cada um tem um ataque automático, uma habilidade de combate e uma habilidade de exploração que abre a próxima área. **Só um pet acompanha o herói por vez**, escolhido na casa da vó antes de sair, e o RB usa a habilidade dele.
 
-| Alma | Onde aparece | Ataque automático | Habilidade (RB) em combate | Habilidade (RB) na exploração |
+| Pet | Como se ganha | Ataque automático | Habilidade (RB) em combate | Habilidade (RB) na exploração |
 | --- | --- | --- | --- | --- |
-| Vagalume (amarela) | Bosque dos Cogumelos | Faíscas no inimigo mais próximo, a cada 1,2 s | Clarão: atordoa os inimigos num raio de 3 tiles por 1,5 s. Recarga de 8 s | Luz: ilumina áreas escuras e revela espectros invisíveis |
-| Barqueira (azul) | Pântano | Onda curta que empurra o inimigo, a cada 1,5 s | Remo: puxa os inimigos de um cone na frente do herói. Recarga de 8 s | Ponte de névoa: atravessa água nos pontos marcados |
+| Vagalume (amarela) | A vó dá no início | Faíscas no inimigo mais próximo, a cada 1,2 s | Clarão: atordoa os inimigos num raio de 3 tiles por 1,5 s. Recarga de 8 s | Luz: ilumina áreas escuras e revela espectros invisíveis |
+| Barqueira (azul) | Pedido 1 (cogumelo) | Onda curta que empurra o inimigo, a cada 1,5 s | Remo: puxa os inimigos de um cone na frente do herói. Recarga de 8 s | Ponte de névoa: atravessa água nos pontos marcados |
+
+**Troca de pet:** o caldeirão da vó abre a tela de escolha, com os pets criados, as habilidades deles e qual vai junto. Os pets que ficam em casa flutuam pela sala. Fora da casa da vó não há troca.
 
 **Comportamento**
 
 - **Seguir:** flutua a 1,5 tile atrás do herói e contorna obstáculos com `NavigationAgent2D`.
 - **Atacar:** escolhe o inimigo mais próximo num raio de 5 tiles e nunca se afasta mais de 6 tiles do herói.
-- **Voltar:** se ficar presa ou longe demais, some e reaparece ao lado do herói. Alma travada em parede estraga a experiência, então o teleporte é a rede de segurança.
-- **Cair:** almas não morrem. Ao perder a "luz" (barra própria), ficam apagadas por 5 s e voltam sozinhas.
+- **Voltar:** se ficar preso ou longe demais, some e reaparece ao lado do herói. Pet travado em parede estraga a experiência, então o teleporte é a rede de segurança.
+- **Cair:** pets não morrem. Ao perder a "luz" (barra própria), ficam apagados por 5 s e voltam sozinhos.
 
-**Como se conquista:** a alma aparece presa por inimigos que a guardam. Ao derrotar os guardas, uma cutscene curta mostra a alma se libertando e a habilidade dela é ensinada logo no mapa seguinte (a luz no bosque sombrio do hub, a ponte no canal do próprio pântano).
+**Como nasce um pet:** o jogador entrega o material, a vó joga no caldeirão e uma cutscene curta mostra a magiquinha e o pet surgindo. A habilidade de exploração é ensinada por uma placa de tutorial no primeiro ponto em que ela é necessária (a luz na entrada do bosque sombrio, a ponte no canal do pântano).
 
 **Visual:** o fantasma branco do Tiny Dungeon com `modulate` de cor e uma `PointLight2D` suave. Ele balança com um seno em `position.y`, sem precisar de animação desenhada.
 
@@ -132,20 +148,20 @@ Sete inimigos comuns e um chefe, todos com sprites do Tiny Dungeon. Cada inimigo
 | Espectro | (0,9) | Bosque, Cemitério | 3 | Teleporta curto e ataca de perto | Ler o aviso antes do ataque |
 | Ciclope | (1,9) | Cemitério | 8 | Investida forte com aviso longo | Atordoar com a Vagalume e punir |
 
-**Variante:** o espectro invisível dos cantos escuros do cemitério só aparece dentro da luz da Vagalume.
+**Variante:** o espectro invisível dos cantos escuros do cemitério só aparece dentro da luz da Vagalume. Sem ela, ele fica visível só no instante do ataque.
 
 **Chefe: o Coveiro** (sprite encapuzado, Tiny Dungeon (3,9), em escala 2x). Vida 40, duas fases, na arena em frente à capela.
 
 1. **Fase 1:** golpes de pá em área com aviso no chão, e a cada 30% de vida perdida ele invoca 2 espectros.
-2. **Fase 2 (abaixo de 50%):** apaga as velas e a arena escurece. Só a luz da Vagalume mostra onde ele está, e a Barqueira puxa ele para longe das lápides onde se esconde.
+2. **Fase 2 (abaixo de 50%):** apaga as velas e a arena escurece. Como só um pet vem junto, qualquer pet vence, cada um de um jeito: a luz da Vagalume mostra onde ele está, e o Remo da Barqueira puxa ele das lápides onde se esconde. Acender as velas com golpes também revela o Coveiro por alguns segundos.
 
 Ao cair, ele larga o **osso**, o terceiro item. A arena fica trancada até o fim da luta.
 
 ## Mundo
 
-&#91;embedded content: progressão · 7 mapas, 2 portões de alma\]
+&#91;embedded content: progressão · 7 mapas, 2 portões de pet\]
 
-Os 7 mapas já existem em JSON com importador para o Godot. A Floresta Escura distribui o jogador para as três áreas, e as setas tracejadas mostram a dependência: a luz da Vagalume abre o pântano e a ponte da Barqueira abre o cemitério. Todo portão é validado por script, então não existe atalho que pule uma alma.
+Os 7 mapas já existem em JSON com importador para o Godot. A Floresta Escura distribui o jogador para as três áreas, e as setas tracejadas mostram a dependência: a luz da Vagalume abre o Bosque dos Cogumelos, e a ponte da Barqueira abre o pântano e o caminho do cemitério. Todo portão é validado por script, então não existe atalho que pule um pedido da vó. A casa da vó é o ponto de troca de pet, então o caminho de volta até ela precisa ser curto (ledges como atalho).
 
 **Estrutura de cada mapa:** estilo Pokémon de GBA, com bordas de árvores, trilhas retas, mato alto onde surgem inimigos, ledges como atalho de volta e uma clareira secreta com baú na floresta. Os mapas atuais serão refeitos nesse formato, começando pela Floresta Escura.
 
@@ -157,10 +173,10 @@ O HUD fica num canto só e some o resto do tempo: a tela é do mapa. Toda tela d
 
 - Corações de vida (Tiny Battle).
 - Dois slots de arma com o ícone do botão (X e Y).
-- Retrato das almas com a recarga do RB em círculo, e a selecionada destacada.
+- Retrato do pet ativo com a recarga do RB em círculo.
 - Contador de poções.
 
-**Canto superior direito:** os três itens da vó, em cinza até serem coletados.
+**Canto superior direito:** o material do pedido atual da vó, em cinza até ser coletado.
 
 **Telas**
 
@@ -170,10 +186,11 @@ O HUD fica num canto só e some o resto do tempo: a tela é do mapa. Toda tela d
 | Pausa | Continuar, controles, opções, sair | Opções: volume, vibração, tremor de tela |
 | Diálogo | Caixa na parte de baixo, nome de quem fala e retrato | A avança, segurar B acelera |
 | Roda de armas | Slots em volta do herói com o tempo desacelerado | Descrita em Controles |
-| Game over | "As almas te levam de volta" e reinicia na última entrada de mapa | Sem perda de itens |
+| Caldeirão (escolha de pet) | Pets criados, habilidade de cada um e qual vai junto | Só na casa da vó |
+| Game over | "Os pets te levam de volta" e reinicia na última entrada de mapa | Sem perda de itens |
 | Placa de tutorial | Mini animação da ação com o ícone do botão | Ideia tirada do Creature Keeper |
 
-**Salvamento:** automático ao trocar de mapa (itens, almas, flags e mapa atual).
+**Salvamento:** automático ao trocar de mapa (itens, pets criados, pet ativo, pedido atual, flags e mapa atual).
 
 ## Arte e áudio
 
@@ -198,11 +215,11 @@ A arte é toda da linha Tiny da Kenney (CC0), em tiles de 16×16, com o que falt
 - Levar dano: shader de flash branco e recuo.
 - Rolar: rotação de 360° com rastro.
 
-**Iluminação:** `CanvasModulate` arroxeado em cada mapa externo, `PointLight2D` no herói e nas almas, e vinheta nas bordas. Interiores ficam mais claros e quentes.
+**Iluminação:** `CanvasModulate` arroxeado em cada mapa externo, `PointLight2D` no herói e no pet, e vinheta nas bordas. Interiores ficam mais claros e quentes.
 
 **Áudio**
 
-- Efeitos sonoros com jsfxr, um para cada ação: golpe, acerto, rolamento, dano, alma, item, porta.
+- Efeitos sonoros com jsfxr, um para cada ação: golpe, acerto, rolamento, dano, pet, item, porta.
 - Música: um tema por área (vila, floresta, pântano, cemitério) e um para o chefe. Opção: gerar com o ACE-Step 1.5, que roda localmente e permite uso comercial.
 - Arquivos em OGG, que o export web toca sem problema.
 
@@ -242,7 +259,8 @@ O MVP é a história completa do começo ao fim, curta e polida. Tudo que aument
 | Dentro do MVP | Fora do MVP (versão 2 ou nunca) |
 | --- | --- |
 | 7 mapas: casa, vila, casa da vó, floresta, bosque, pântano, cemitério | Mais biomas e mapas gerados a cada partida |
-| 2 almas (Vagalume e Barqueira) | Coleção grande de almas, evolução, árvore de habilidades |
+| 2 pets (Vagalume e Barqueira), um ativo por vez, trocados só na casa da vó | Coleção grande de pets, evolução, árvore de habilidades |
+| 3 pedidos da vó com caldeirão | Pedidos opcionais, receitas |
 | 3 armas (espada, machado, cajado) | Forja, melhorias, raridade de itens |
 | 7 inimigos e 1 chefe | Mais chefes, inimigos de elite |
 | Poção como único consumível | Culinária, inventário grande, loja |
@@ -261,9 +279,9 @@ Seis marcos em sequência, cada um com um portão: só se passa para o próximo 
    - Portão: anda bem no controle, no Chrome e no Firefox.
 2. **Combate do herói.** Espada, rolamento, aranha e todo o feedback de golpe.
    - Portão: derrotar 3 aranhas já é divertido só com quadrados cinzas no fundo.
-3. **Primeira alma.** Vagalume seguindo, atacando sozinha, Clarão e Luz.
+3. **Primeiro pet.** Vagalume seguindo, atacando sozinha, Clarão e Luz.
    - Portão: a dupla é mais divertida que o herói sozinho. Se não for, ajustar antes de seguir.
-4. **Conteúdo.** Os 7 mapas, a roda de armas, machado e cajado, Barqueira e os 7 inimigos.
+4. **Conteúdo.** Os 7 mapas, a roda de armas, machado e cajado, pedidos da vó com caldeirão e troca de pet, Barqueira e os 7 inimigos.
    - Portão: dá pra ir da casa ao cemitério sem travar.
 5. **História e chefe.** Cutscenes, diálogos, o Coveiro e o final.
    - Portão: alguém de fora termina o jogo sem ajuda.
@@ -275,7 +293,8 @@ Seis marcos em sequência, cada um com um portão: só se passa para o próximo 
 | Risco | Sinal de alerta | Plano |
 | --- | --- | --- |
 | Combate sem graça, como aconteceu no Botijão | Marco 2 sem vontade de jogar de novo | Parar e ajustar números (`@export`) antes de qualquer arte ou conteúdo |
-| IA da alma travando em parede | Alma presa ou longe do herói | Teleporte de volta e raio máximo de 6 tiles |
+| IA do pet travando em parede | Pet preso ou longe do herói | Teleporte de volta e raio máximo de 6 tiles |
+| Ida e volta cansativa para trocar de pet | Jogador volta à vó só para trocar | Portões abertos ficam abertos, atalhos de volta para a casa da vó |
 | Controle diferente por navegador | Botão trocado ou gatilho errado | Nada essencial nos gatilhos, testar Xbox e PlayStation no Chrome e no Firefox a cada build |
-| Escopo crescer | Vontade de adicionar alma, arma ou mapa | Toda ideia nova vai para a coluna "Fora do MVP" |
+| Escopo crescer | Vontade de adicionar pet, arma ou mapa | Toda ideia nova vai para a coluna "Fora do MVP" |
 | Tempo dividido com o trabalho de clientes | Semanas sem commit | Marcos pequenos e build jogável no itch.io ao fim de cada um |
