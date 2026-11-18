@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://src/actors/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://src/actors/enemies/rat/rat.gd" id="2_script"]
+
+[node name="Rat" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+max_health = 1
+detect_radius = 110.0
+hit_particle_color = Color(0.7, 0.6, 0.5, 1)
+
+[node name="Sprite" parent="Visual" index="0"]
+region_rect = Rect2(48, 160, 16, 16)
+
+[node name="Visual" parent="." index="1"]
+steps_per_second = 14.0

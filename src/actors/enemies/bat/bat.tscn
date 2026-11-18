@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://src/actors/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://src/actors/enemies/bat/bat.gd" id="2_script"]
+
+[node name="Bat" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+collision_mask = 0
+max_health = 1
+detect_radius = 110.0
+hit_particle_color = Color(0.6, 0.5, 0.7, 1)
+
+[node name="Sprite" parent="Visual" index="0"]
+region_rect = Rect2(0, 160, 16, 16)
+
+[node name="Visual" parent="." index="1"]
+position = Vector2(0, -6)
+hop_height = 0.0
+
+[node name="Shape" parent="Hurtbox" index="0"]
+position = Vector2(0, -12)
+
+[node name="Shape" parent="ContactHitbox" index="0"]
+position = Vector2(0, -10)

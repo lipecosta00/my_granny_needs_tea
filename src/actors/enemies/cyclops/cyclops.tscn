@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://src/actors/enemies/spider/spider.tscn" id="1_spider"]
+
+[node name="Cyclops" instance=ExtResource("1_spider")]
+max_health = 8
+contact_damage = 2
+contact_knockback = 200.0
+knockback_resistance = 0.7
+wall_stun_time = 2.0
+detect_radius = 112.0
+hit_particle_color = Color(0.85, 0.7, 0.55, 1)
+wander_speed = 14.0
+telegraph_time = 1.0
+aim_lock_time = 0.3
+dash_speed = 165.0
+dash_time = 0.6
+recover_time = 1.0
+dash_wall_stun_time = 2.0
+
+[node name="Visual" parent="." index="1"]
+steps_per_second = 6.0
+hop_height = 1.5
+
+[node name="Sprite" parent="Visual" index="0"]
+region_rect = Rect2(16, 144, 16, 16)

@@ -24,9 +24,8 @@ func _spawn_enemies() -> void:
 	if markers == null:
 		return
 	for marker: Node2D in markers.get_children():
-		var enemy := EnemyCatalog.instantiate(marker.get_meta(&"enemy", &""))
-		if enemy:
-			enemy.position = marker.global_position - actors.global_position
+		for enemy in EnemyCatalog.spawn(marker.get_meta(&"enemy", &"")):
+			enemy.position += marker.global_position - actors.global_position
 			actors.add_child(enemy)
 
 

@@ -87,7 +87,9 @@ entrar, ele substitui o layout ASCII gerando a mesma forma de cena
 
 **Legenda do layout:** `T` floresta · `=` trilha · `~` lago · `"` mato alto · `a` árvore de outono ·
 `p` pinheiro · `d` árvore morta · `m` cogumelos · `b` arbusto · `r` pedra · `s` placa ·
-`c` baú · `*` flores · `@` spawn · `S` aranha.
+`*` flores · `@` spawn. Inimigos: `S` aranha · `B` morcego · `R` bando de ratos · `G` lesma ·
+`K` caranguejo · `E` espectro · `I` espectro invisível · `C` ciclope. Baús e portões vêm da
+lista `MAPS` em `tools/bake_maps.gd`.
 
 ## CI / itch.io
 

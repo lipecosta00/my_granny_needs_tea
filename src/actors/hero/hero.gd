@@ -66,6 +66,8 @@ var _charge_started := 0.0
 var _charge_ready := false
 var _flash := 0.0
 var _afterimage_cooldown := 0.0
+var _slow_until := 0.0
+var _slow_factor := 1.0
 
 @onready var health: Health = $Health
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -120,6 +122,16 @@ func is_invulnerable() -> bool:
 	return state == State.DEAD or _clock < _invulnerable_until
 
 
+## Slime and similar hazards: speed multiplier for [param duration] seconds.
+func slow(factor: float, duration: float) -> void:
+	_slow_factor = factor if _clock >= _slow_until else minf(_slow_factor, factor)
+	_slow_until = maxf(_slow_until, _clock + duration)
+
+
+func speed_multiplier() -> float:
+	return _slow_factor if _clock < _slow_until else 1.0
+
+
 func revive() -> void:
 	health.reset()
 	_cancel_attack()
@@ -139,7 +151,8 @@ func _state_move(delta: float) -> void:
 		_open_wheel()
 		return
 	var direction := _move_input()
-	velocity = TopDownMotor.step(velocity, direction, max_speed, acceleration, friction, delta)
+	velocity = TopDownMotor.step(
+		velocity, direction, max_speed * speed_multiplier(), acceleration, friction, delta)
 	_update_facing(direction)
 	_try_start_action()
 
@@ -198,7 +211,7 @@ func _state_swing(delta: float) -> void:
 func _state_charging(delta: float) -> void:
 	var direction := _move_input()
 	velocity = TopDownMotor.step(
-		velocity, direction, max_speed * charge_move_multiplier, acceleration, friction, delta)
+		velocity, direction, max_speed * charge_move_multiplier * speed_multiplier(), acceleration, friction, delta)
 	_update_facing(direction)
 	_weapon_pivot.rotation = facing.angle()
 	if not _charge_ready and _clock - _charge_started >= _weapon.charge_time:

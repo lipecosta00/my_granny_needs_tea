@@ -47,6 +47,13 @@ const PROPS := {
 ## Enemy spawn markers: char -> EnemyCatalog id (ground under them is grass).
 const ENEMIES := {
 	"S": &"spider",
+	"B": &"bat",
+	"R": &"rat_pack",
+	"G": &"slug",
+	"K": &"crab",
+	"E": &"specter",
+	"I": &"specter_invisible",
+	"C": &"cyclops",
 }
 const GRASS := [Src.TOWN, Vector2i(0, 0)]
 const GRASS_TUFT := [Src.TOWN, Vector2i(1, 0)]

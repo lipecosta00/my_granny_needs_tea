@@ -16,6 +16,8 @@ signal died(enemy: Enemy)
 @export var wall_stun_min_speed := 100.0
 @export var detect_radius := 96.0
 @export var hit_particle_color := Color(0.85, 0.85, 0.9)
+## 0 = full knockback, 1 = immovable (cyclops shrugs most hits off).
+@export_range(0.0, 1.0) var knockback_resistance := 0.0
 
 var stunned_for := 0.0
 var _hurt_for := 0.0
@@ -111,6 +113,15 @@ func _on_stunned() -> void:
 	pass
 
 
+## Return true to ignore the hit (crab's shell). Stunned enemies never block.
+func _blocks_hit(_hit: HitData) -> bool:
+	return false
+
+
+func _on_blocked(_hit: HitData) -> void:
+	pass
+
+
 # --- Internals -------------------------------------------------------------
 
 func _make_contact_hit(target: Hurtbox) -> HitData:
@@ -121,10 +132,15 @@ func _make_contact_hit(target: Hurtbox) -> HitData:
 func _on_hit_received(hit: HitData) -> void:
 	if _dead:
 		return
+	if not is_stunned() and _blocks_hit(hit):
+		Fx.sfx(&"fizzle", 0.0)
+		Fx.burst(global_position + Vector2(0, -6) - hit.knockback.normalized() * 6.0, Color.WHITE, 4, 50.0)
+		_on_blocked(hit)
+		return
 	var was_stunned := is_stunned()
 	var amount := HitData.resolve_damage(hit, was_stunned)
 	var big := HitData.is_big_impact(hit, was_stunned)
-	velocity = hit.knockback
+	velocity = hit.knockback * (1.0 - knockback_resistance)
 	_hurt_for = hurt_time
 	_wall_stun_armed = hit.wall_stun
 	_flash = 1.0

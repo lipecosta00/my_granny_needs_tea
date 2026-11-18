@@ -3,7 +3,7 @@ TTTTTTTTTTTTTTTTTTTTT..==..TTTTTTTTTTTTTTTTTTTTT
 TTTTTTTTTTTTTTTTTTTTT..==..TTTTTTTTTTTTTTTTTTTTT
 TTTTTTTTTTT............==........TTTTTTTTTTTTTTT
 TTTTTTTTTTT...a...a....==.....a..TTTTTTTTTTTTTTT
-TTTTTTTTTTT.........b..==........TTTT......TTTTT
+TTTTTTTTTTT.........b..==....B...TTTT......TTTTT
 TTTTTTTTTTT.""""""""...==..a.....TTTT.m....TTTTT
 TTTTTT......""""""""...==........TTTT....m.TTTTT
 TTTTTT......""""""""...==......p.TTTT......TTTTT
@@ -20,7 +20,7 @@ TTT..m......m......p...==..r.."""""""........TTT
 TTT..a..m..d.........*s==.*.............a....TTT
 TTT.............a......==...""""""a"........pTTT
 TTT.......m..p.........==..."""""""".........TTT
-TTT..~~~~~~~.....S.....==.d.""""""""p........TTT
+TTT..~~~~~~~.....S.....==.d.""""""""p.B......TTT
 TTT..~~~~~~~...........==..."""""""".....TTTTTTT
 TTT..~~~~~~~........a..==..."""""""".....TTTTTTT
 TTT..~~~~~~~.r..S.b....==..."""""""".....TTTTTTT
