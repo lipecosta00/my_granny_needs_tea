@@ -26,7 +26,12 @@ jobs:
         run: godot --headless --path . --import
 
       - name: Unit tests
-        run: godot --headless --path . -s tests/run_tests.gd
+        # Also fails on runtime/engine errors, which Godot logs without failing.
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path . -s tests/run_tests.gd 2>&1 | tee test.log
+          ! grep -qE "SCRIPT ERROR|^ERROR:" test.log
 
       - name: Baked maps are up to date
         # Fails if someone edited a layout or the bake tool without re-baking.

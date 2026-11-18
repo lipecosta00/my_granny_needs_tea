@@ -14,6 +14,7 @@ func _init() -> void:
 
 
 func _run() -> void:
+	root.get_node(^"Fx").sfx_enabled = false
 	var total := 0
 	var failed: PackedStringArray = []
 	var files := DirAccess.get_files_at(TEST_DIR)
@@ -38,4 +39,7 @@ func _run() -> void:
 	for failure in failed:
 		printerr("FAILED ", failure)
 	print("%d tests, %d assertion failures" % [total, failed.size()])
+	# Let in-flight tweens/particles end so exit is leak-free (clean CI logs).
+	for i in 3:
+		await process_frame
 	quit(0 if failed.is_empty() and total > 0 else 1)

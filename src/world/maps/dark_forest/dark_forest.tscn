@@ -28,3 +28,17 @@ tile_set = ExtResource("2_2")
 
 [node name="Default" type="Marker2D" parent="Spawns"]
 position = Vector2(376, 478)
+
+[node name="Enemies" type="Node2D" parent="Spawns"]
+
+[node name="spider_17_22" type="Marker2D" parent="Spawns/Enemies"]
+position = Vector2(280, 366)
+metadata/enemy = &"spider"
+
+[node name="spider_16_25" type="Marker2D" parent="Spawns/Enemies"]
+position = Vector2(264, 414)
+metadata/enemy = &"spider"
+
+[node name="spider_33_27" type="Marker2D" parent="Spawns/Enemies"]
+position = Vector2(536, 446)
+metadata/enemy = &"spider"

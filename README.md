@@ -5,19 +5,33 @@ Design completo em [`My granny needs tea - GDD do MVP.md`](My%20granny%20needs%2
 
 **Engine:** Godot 4.3+ · GDScript · renderer Compatibility · export Web single-threaded.
 
-## Estado: Marco 1 — Base jogável
+## Estado
 
-- [x] Herói andando em 8 direções com quique procedural (sprite de 1 quadro)
-- [x] Câmera seguindo com limites do mapa
-- [x] Floresta Escura (placeholder em ASCII, ver abaixo)
-- [x] Input map completo do GDD (gamepad + teclado)
-- [x] Export web single-threaded
-- [ ] Portão: testar no gamepad (Xbox e PS) no Chrome e no Firefox
-- [ ] Rascunho no itch.io
+**Marco 1 — Base jogável** (código pronto; falta o portão no gamepad)
+
+- [x] Herói em 8 direções com quique procedural, câmera com limites, Floresta Escura (placeholder)
+- [x] Input map do GDD (gamepad + teclado), export web single-threaded
+- [ ] Portão: gamepad Xbox e PS no Chrome e no Firefox · rascunho no itch.io
+
+**Marco 2 — Combate do herói** (código pronto; falta o portão)
+
+- [x] Espada: golpe em arco (rastro `Line2D`), segurar 0,6 s = investida de 3 de dano
+- [x] Rolamento 0,35 s com 0,25 s de invencibilidade e recarga de 0,4 s
+- [x] Buffer de entrada de 0,15 s (por evento: toque mais curto que 1 frame não se perde)
+- [x] Aranha: aviso → investida reta; bater em árvore = atordoada (dano dobrado)
+- [x] Feedback: hitstop 0,06/0,1 s, flash branco, recuo, número de dano, partículas, som, tremor, vibração
+- [x] Corações (meio coração por golpe) e game over com volta à entrada do mapa
+- [ ] Portão: derrotar 3 aranhas já é divertido? (ajustar números `@export` jogando)
 
 ## Rodando
 
-Abra a pasta no Godot 4.3+ e aperte F5. Teclado: WASD/setas. Gamepad: analógico esquerdo.
+Abra a pasta no Godot 4.3+ e aperte F5.
+
+| Ação | Gamepad (Xbox / PS) | Teclado |
+| --- | --- | --- |
+| Andar | Analógico esquerdo | WASD / setas |
+| Atacar (segurar = carregado) | X / Quadrado | J |
+| Rolar | B / Círculo | Espaço |
 
 Linha de comando (o binário do Godot precisa estar no PATH como `godot`):
 
@@ -35,11 +49,16 @@ O build web precisa ser servido por HTTP (ex.: `python -m http.server` dentro de
 
 ```
 assets/kenney/        Tilesheets Tiny (CC0), atlas 16x16 sem espaçamento
-src/actors/           TopDownMotor (lógica pura), WalkBounce, herói
-src/core/             Câmera, sombra
-src/game/             Game: dono do herói e da câmera, carrega mapas
+assets/sfx/           Efeitos sintetizados (tools/audio/gen_sfx.py)
+src/actors/           TopDownMotor, WalkBounce, herói, inimigos (Enemy + Spider)
+src/autoload/         Fx (hitstop, tremor, números, partículas, som, vibração), Settings
+src/combat/           HitData, Hitbox, Hurtbox, Health
+src/core/             Câmera, sombra, InputBuffer
+src/weapons/          WeaponData (.tres por arma)
+src/game/             Game: dono do herói, câmera e HUD, carrega mapas
+src/ui/               HUD (corações)
 src/world/            GameMap (base), tileset e mapas gerados
-tools/                setup_input_map.gd, bake_maps.gd
+tools/                setup_input_map.gd, bake_maps.gd, audio/gen_sfx.py
 tests/                Runner headless + testes (CI)
 ```
 
@@ -49,6 +68,7 @@ tests/                Runner headless + testes (CI)
 | --- | --- | --- |
 | Input map (`project.godot`) | `tools/setup_input_map.gd` | `godot --headless --path . -s tools/setup_input_map.gd` |
 | TileSet + mapas `.tscn` | `src/world/maps/*/*.layout.txt`, `tools/bake_maps.gd` | `godot --headless --path . -s tools/bake_maps.gd` |
+| Efeitos sonoros `assets/sfx/*.wav` | `tools/audio/gen_sfx.py` | `python3 tools/audio/gen_sfx.py` |
 
 O CI falha se o mapa gerado não bater com o layout. Quando o importador JSON dos 7 mapas
 entrar, ele substitui o layout ASCII gerando a mesma forma de cena
@@ -56,7 +76,7 @@ entrar, ele substitui o layout ASCII gerando a mesma forma de cena
 
 **Legenda do layout:** `T` floresta · `=` trilha · `~` lago · `"` mato alto · `a` árvore de outono ·
 `p` pinheiro · `d` árvore morta · `m` cogumelos · `b` arbusto · `r` pedra · `s` placa ·
-`c` baú · `*` flores · `@` spawn.
+`c` baú · `*` flores · `@` spawn · `S` aranha.
 
 ## CI / itch.io
 

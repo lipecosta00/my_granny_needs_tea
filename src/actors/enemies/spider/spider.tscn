@@ -1,0 +1,80 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://src/actors/enemies/spider/spider.gd" id="1_spider"]
+[ext_resource type="Script" path="res://src/core/blob_shadow.gd" id="2_shadow"]
+[ext_resource type="Script" path="res://src/actors/walk_bounce.gd" id="3_bounce"]
+[ext_resource type="Shader" path="res://src/fx/flash.gdshader" id="4_flash"]
+[ext_resource type="Texture2D" path="res://assets/kenney/tiny_dungeon/tilemap_packed.png" id="5_dungeon"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="6_hurtbox"]
+[ext_resource type="Script" path="res://src/combat/hitbox.gd" id="7_hitbox"]
+[ext_resource type="Script" path="res://src/combat/health.gd" id="8_health"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("4_flash")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_contact"]
+radius = 5.0
+
+[node name="Spider" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 7
+motion_mode = 1
+script = ExtResource("1_spider")
+
+[node name="Shadow" type="Node2D" parent="."]
+script = ExtResource("2_shadow")
+radius = Vector2(6, 2)
+
+[node name="Visual" type="Node2D" parent="." node_paths=PackedStringArray("body", "shadow")]
+script = ExtResource("3_bounce")
+body = NodePath("..")
+shadow = NodePath("../Shadow")
+reference_speed = 60.0
+hop_height = 1.0
+steps_per_second = 12.0
+squash_amount = 0.08
+
+[node name="Sprite" type="Sprite2D" parent="Visual"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_flash")
+position = Vector2(0, -8)
+texture = ExtResource("5_dungeon")
+region_enabled = true
+region_rect = Rect2(32, 160, 16, 16)
+
+[node name="Body" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("CircleShape2D_body")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("6_hurtbox")
+team = 1
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_hurt")
+
+[node name="ContactHitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("7_hitbox")
+team = 1
+rehit_interval = 0.5
+
+[node name="Shape" type="CollisionShape2D" parent="ContactHitbox"]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_contact")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("8_health")

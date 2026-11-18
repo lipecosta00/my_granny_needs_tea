@@ -1,15 +1,17 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
 [ext_resource type="PackedScene" path="res://src/world/maps/dark_forest/dark_forest.tscn" id="2_forest"]
 [ext_resource type="PackedScene" path="res://src/actors/hero/hero.tscn" id="3_hero"]
 [ext_resource type="Script" path="res://src/core/follow_camera.gd" id="4_camera"]
+[ext_resource type="Script" path="res://src/ui/hearts_bar.gd" id="5_hearts"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera")]
+[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera", "hearts")]
 script = ExtResource("1_game")
 start_map = ExtResource("2_forest")
 hero = NodePath("Hero")
 camera = NodePath("Camera")
+hearts = NodePath("Hud/Hearts")
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 
@@ -17,3 +19,14 @@ camera = NodePath("Camera")
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 script = ExtResource("4_camera")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Hearts" type="HBoxContainer" parent="Hud"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 100.0
+offset_bottom = 20.0
+theme_override_constants/separation = 0
+script = ExtResource("5_hearts")

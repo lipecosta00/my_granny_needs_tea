@@ -45,6 +45,10 @@ const PROPS := {
 	"c": [Src.DUNGEON, Vector2i(5, 7), ROUND, false],  # chest (secret clearing)
 	"\"": [Src.FARM, Vector2i(8, 6), [], false],     # tall grass (placeholder art)
 }
+## Enemy spawn markers: char -> EnemyCatalog id (ground under them is grass).
+const ENEMIES := {
+	"S": &"spider",
+}
 const GRASS := [Src.TOWN, Vector2i(0, 0)]
 const GRASS_TUFT := [Src.TOWN, Vector2i(1, 0)]
 const FLOWERS := [Src.TOWN, Vector2i(2, 0)]
@@ -177,6 +181,7 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 	_own(root, world, objects)
 
 	var spawn := Vector2i(rows[0].length() / 2, rows.size() / 2)
+	var enemy_cells: Array = []  # [cell, enemy id]
 	for y in rows.size():
 		for x in rows[y].length():
 			var ch := rows[y][x]
@@ -190,15 +195,26 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 				_put(objects, cell, _nine_slice("T", rows, cell))
 			elif ch == "@":
 				spawn = cell
+			elif ENEMIES.has(ch):
+				enemy_cells.append([cell, ENEMIES[ch]])
 
 	var spawns := Node2D.new()
 	spawns.name = "Spawns"
 	_own(root, root, spawns)
 	var default_spawn := Marker2D.new()
 	default_spawn.name = String(GameMap.DEFAULT_SPAWN)
-	# Feet slightly above the cell's bottom edge.
-	default_spawn.position = Vector2(spawn * TILE) + Vector2(TILE / 2.0, TILE - 2.0)
+	default_spawn.position = _feet_position(spawn)
 	_own(root, spawns, default_spawn)
+	if not enemy_cells.is_empty():
+		var enemies := Node2D.new()
+		enemies.name = "Enemies"
+		_own(root, spawns, enemies)
+		for entry: Array in enemy_cells:
+			var marker := Marker2D.new()
+			marker.name = "%s_%d_%d" % [entry[1], entry[0].x, entry[0].y]
+			marker.position = _feet_position(entry[0])
+			marker.set_meta(&"enemy", entry[1])
+			_own(root, enemies, marker)
 
 	root.ground = ground
 	root.actors = world
@@ -212,6 +228,11 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 		spec.name, rows[0].length(), rows.size(), spawn, spec.out, error_string(err)])
 	root.free()
 	return err
+
+
+## Actor origin is at the feet: slightly above the cell's bottom edge.
+func _feet_position(cell: Vector2i) -> Vector2:
+	return Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE - 2.0)
 
 
 func _paint_ground(ground: TileMapLayer, rows: PackedStringArray, cell: Vector2i, ch: String) -> void:

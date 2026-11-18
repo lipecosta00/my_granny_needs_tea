@@ -14,6 +14,20 @@ const DEFAULT_SPAWN := &"Default"
 
 func _ready() -> void:
 	_build_edge_walls(get_bounds())
+	_spawn_enemies()
+
+
+## Markers under Spawns/Enemies carry metadata "enemy" = catalog id. Enemies
+## are created fresh on every map load (re-entering repopulates the route).
+func _spawn_enemies() -> void:
+	var markers := spawns.get_node_or_null(^"Enemies") if spawns else null
+	if markers == null:
+		return
+	for marker: Node2D in markers.get_children():
+		var enemy := EnemyCatalog.instantiate(marker.get_meta(&"enemy", &""))
+		if enemy:
+			enemy.position = marker.global_position - actors.global_position
+			actors.add_child(enemy)
 
 
 ## Map rectangle in world pixels, from the ground layer's used cells.

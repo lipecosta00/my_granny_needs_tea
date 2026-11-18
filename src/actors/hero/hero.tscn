@@ -1,12 +1,38 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://src/actors/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://src/actors/walk_bounce.gd" id="2_bounce"]
 [ext_resource type="Script" path="res://src/core/blob_shadow.gd" id="3_shadow"]
 [ext_resource type="Texture2D" path="res://assets/kenney/tiny_farm/tilemap_packed.png" id="4_farm"]
+[ext_resource type="Resource" path="res://src/weapons/sword.tres" id="5_sword"]
+[ext_resource type="Shader" path="res://src/fx/flash.gdshader" id="6_flash"]
+[ext_resource type="Texture2D" path="res://assets/kenney/tiny_dungeon/tilemap_packed.png" id="7_dungeon"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="8_hurtbox"]
+[ext_resource type="Script" path="res://src/combat/hitbox.gd" id="9_hitbox"]
+[ext_resource type="Script" path="res://src/combat/health.gd" id="10_health"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("6_flash")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
 radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
+resource_local_to_scene = true
+radius = 10.0
+
+[sub_resource type="Gradient" id="Gradient_trail"]
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.8)
+
+[sub_resource type="Curve" id="Curve_trail"]
+_data = [Vector2(0, 0.2), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="Gradient" id="Gradient_light"]
 offsets = PackedFloat32Array(0, 0.55, 1)
@@ -25,6 +51,7 @@ collision_layer = 2
 collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_hero")
+primary_weapon = ExtResource("5_sword")
 
 [node name="Shadow" type="Node2D" parent="."]
 script = ExtResource("3_shadow")
@@ -36,14 +63,56 @@ shadow = NodePath("../Shadow")
 
 [node name="Sprite" type="Sprite2D" parent="Visual"]
 unique_name_in_owner = true
+material = SubResource("ShaderMaterial_flash")
+position = Vector2(0, -8)
 texture = ExtResource("4_farm")
-offset = Vector2(0, -8)
 region_enabled = true
 region_rect = Rect2(0, 144, 16, 16)
+
+[node name="WeaponPivot" type="Node2D" parent="."]
+visible = false
+position = Vector2(0, -7)
+
+[node name="WeaponSprite" type="Sprite2D" parent="WeaponPivot"]
+unique_name_in_owner = true
+position = Vector2(9, 0)
+rotation = 1.5708
+texture = ExtResource("7_dungeon")
+region_enabled = true
+region_rect = Rect2(128, 128, 16, 16)
 
 [node name="Feet" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)
 shape = SubResource("CircleShape2D_feet")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("8_hurtbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_hurt")
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+script = ExtResource("9_hitbox")
+
+[node name="Shape" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("CircleShape2D_attack")
+
+[node name="Trail" type="Line2D" parent="."]
+top_level = true
+width = 4.0
+width_curve = SubResource("Curve_trail")
+gradient = SubResource("Gradient_trail")
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("10_health")
 
 [node name="Light" type="PointLight2D" parent="."]
 position = Vector2(0, -6)

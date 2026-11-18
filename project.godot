@@ -14,6 +14,11 @@ config/name="My granny needs tea"
 run/main_scene="res://src/game/game.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 
+[autoload]
+
+Settings="*res://src/autoload/settings.gd"
+Fx="*res://src/autoload/fx.gd"
+
 [display]
 
 window/size/viewport_width=480
@@ -107,7 +112,9 @@ pet_ability={
 2d_physics/layer_1="world"
 2d_physics/layer_2="hero"
 2d_physics/layer_3="enemies"
-2d_physics/layer_4="souls"
+2d_physics/layer_4="pets"
+2d_physics/layer_5="hero_hurtbox"
+2d_physics/layer_6="enemy_hurtbox"
 
 [rendering]
 
