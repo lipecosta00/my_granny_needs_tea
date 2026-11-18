@@ -7,7 +7,9 @@ extends RefCounted
 ## shorter than one frame (press + release in the same frame) is invisible to
 ## polling in Godot 4.3, and a dropped attack breaks "gostoso no controle".
 
-const BUFFERED_ACTIONS: Array[StringName] = [&"attack_primary", &"attack_secondary", &"roll"]
+## Discrete presses captured from events (pet_ability is not buffered, the
+## hero forwards it to the pet right away).
+const PRESS_ACTIONS: Array[StringName] = [&"attack_primary", &"attack_secondary", &"roll", &"pet_ability"]
 
 var _pending: Array[StringName] = []
 
@@ -22,7 +24,7 @@ func is_held(action: StringName) -> bool:
 
 ## Called by Hero._unhandled_input for every event.
 func feed(event: InputEvent) -> void:
-	for action in BUFFERED_ACTIONS:
+	for action in PRESS_ACTIONS:
 		if event.is_action_pressed(action, false, true):
 			_pending.append(action)
 

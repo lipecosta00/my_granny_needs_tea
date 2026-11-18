@@ -12,13 +12,40 @@ func _blocked(layer: TileMapLayer, cell: Vector2i) -> bool:
 	return data != null and data.get_collision_polygons_count(0) > 0
 
 
-func _walkable_cells(map: GameMap) -> Dictionary:
+## Walkable tiles; cells under a closed gate are blocked unless its ability
+## is in [param abilities] (what the player's pets can do at that point).
+func _walkable_cells(map: GameMap, abilities: Array = []) -> Dictionary:
 	var objects := map.actors.get_node("Objects") as TileMapLayer
+	var gated := {}
+	var gates := map.get_node_or_null(^"Gates")
+	if gates:
+		for gate: PetGate in gates.get_children():
+			if gate.required_ability in abilities:
+				continue
+			var origin := map.ground.local_to_map(gate.position + Vector2(1, 1))
+			var cells_size := Vector2i(gate.size) / map.ground.tile_set.tile_size
+			for y in cells_size.y:
+				for x in cells_size.x:
+					gated[origin + Vector2i(x, y)] = true
 	var cells := {}
 	for cell in map.ground.get_used_cells():
-		if not _blocked(map.ground, cell) and not _blocked(objects, cell):
+		if not _blocked(map.ground, cell) and not _blocked(objects, cell) and not gated.has(cell):
 			cells[cell] = true
 	return cells
+
+
+func _exits_reached(map: GameMap, abilities: Array) -> Dictionary:
+	var walkable := _walkable_cells(map, abilities)
+	var spawn_cell := map.ground.local_to_map(map.get_spawn_position())
+	var reach := _reachable_from(spawn_cell, walkable)
+	var rect := map.ground.get_used_rect()
+	var exits := {"north": false, "south": false, "west": false, "east": false}
+	for cell: Vector2i in reach:
+		exits.north = exits.north or cell.y == rect.position.y
+		exits.south = exits.south or cell.y == rect.end.y - 1
+		exits.west = exits.west or cell.x == rect.position.x
+		exits.east = exits.east or cell.x == rect.end.x - 1
+	return exits
 
 
 func _reachable_from(start: Vector2i, walkable: Dictionary) -> Dictionary:
@@ -42,22 +69,22 @@ func test_every_tile_resolves_in_tileset() -> void:
 	map.free()
 
 
-func test_spawn_is_walkable_and_all_exits_reachable() -> void:
+func test_spawn_is_walkable() -> void:
 	var map := load(MAP_SCENE).instantiate() as GameMap
-	var walkable := _walkable_cells(map)
 	var spawn_cell := map.ground.local_to_map(map.get_spawn_position())
-	assert_true(walkable.has(spawn_cell), "spawn %s is blocked" % spawn_cell)
+	assert_true(_walkable_cells(map).has(spawn_cell), "spawn %s is blocked" % spawn_cell)
+	map.free()
 
-	var reach := _reachable_from(spawn_cell, walkable)
-	var rect := map.ground.get_used_rect()
-	var exits := {"north": false, "south": false, "west": false, "east": false}
-	for cell: Vector2i in reach:
-		exits.north = exits.north or cell.y == rect.position.y
-		exits.south = exits.south or cell.y == rect.end.y - 1
-		exits.west = exits.west or cell.x == rect.position.x
-		exits.east = exits.east or cell.x == rect.end.x - 1
-	for side in exits:
-		assert_true(exits[side], "%s exit unreachable from spawn" % side)
+
+## GDD: "Todo portão é validado por script" — the Bosque (west) needs the
+## Vagalume's light; nothing else is gated in the hub yet.
+func test_progression_gates() -> void:
+	var map := load(MAP_SCENE).instantiate() as GameMap
+	var without := _exits_reached(map, [])
+	assert_true(without.north and without.south and without.east, "open exits reachable")
+	assert_false(without.west, "the bosque must require the Vagalume's light")
+	var with_light := _exits_reached(map, [&"light"])
+	assert_true(with_light.west, "light opens the way to the bosque")
 	map.free()
 
 
@@ -68,4 +95,6 @@ func test_game_places_hero_in_map() -> void:
 	assert_eq(game.hero.get_parent(), game.current_map.actors, "hero must live in the y-sorted layer")
 	assert_vec_almost(game.hero.global_position, game.current_map.get_spawn_position())
 	assert_eq(game.camera.target, game.hero)
+	assert_true(game.pet is Vagalume, "starts with the Vagalume")
+	assert_eq(game.pet.get_parent(), game.current_map.actors, "pet lives with the hero")
 	game.free()

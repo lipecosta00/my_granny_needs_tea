@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=4]
+[gd_scene load_steps=4 format=4]
 
 [ext_resource type="Script" path="res://src/world/game_map.gd" id="1_1"]
 [ext_resource type="TileSet" path="res://src/world/tiles/overworld_tileset.tres" id="2_2"]
+[ext_resource type="Script" path="res://src/world/pet_gate.gd" id="3_3"]
 
 [node name="DarkForest" type="Node2D" node_paths=PackedStringArray("ground", "actors", "spawns")]
 script = ExtResource("1_1")
@@ -42,3 +43,12 @@ metadata/enemy = &"spider"
 [node name="spider_33_27" type="Marker2D" parent="Spawns/Enemies"]
 position = Vector2(536, 446)
 metadata/enemy = &"spider"
+
+[node name="Gates" type="Node2D" parent="."]
+
+[node name="BosqueDarkness" type="StaticBody2D" parent="Gates"]
+position = Vector2(0, 240)
+script = ExtResource("3_3")
+gate_id = &"dark_forest/bosque_darkness"
+required_ability = &"light"
+size = Vector2(48, 64)

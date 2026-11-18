@@ -16,6 +16,9 @@ var stun_time := 0.0
 ## GDD: an enemy knocked into a wall by this hit gets stunned for 1 s.
 ## Charged attacks and pet pushes set it; plain swings don't.
 var wall_stun := false
+## Pet hits don't get the stun bonus: the GDD synergy is "o pet atordoa,
+## o herói finaliza".
+var from_pet := false
 
 
 static func make(amount: int, push: Vector2, from_team: Team, from: Node = null) -> HitData:
@@ -29,7 +32,7 @@ static func make(amount: int, push: Vector2, from_team: Team, from: Node = null)
 
 ## GDD synergy: a stunned enemy takes double damage from the hero.
 static func resolve_damage(hit: HitData, target_stunned: bool, stun_multiplier := 2) -> int:
-	if target_stunned and hit.team == Team.HERO:
+	if target_stunned and hit.team == Team.HERO and not hit.from_pet:
 		return hit.damage * stun_multiplier
 	return hit.damage
 

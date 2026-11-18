@@ -1,0 +1,71 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://src/actors/pets/vagalume/vagalume.gd" id="1_vagalume"]
+[ext_resource type="Script" path="res://src/core/blob_shadow.gd" id="2_shadow"]
+[ext_resource type="Shader" path="res://src/fx/flash.gdshader" id="3_flash"]
+[ext_resource type="Texture2D" path="res://assets/kenney/tiny_dungeon/tilemap_packed.png" id="4_dungeon"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="5_hurtbox"]
+[ext_resource type="Script" path="res://src/combat/health.gd" id="6_health"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("3_flash")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 5.0
+
+[sub_resource type="Gradient" id="Gradient_lamp"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.3, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lamp"]
+gradient = SubResource("Gradient_lamp")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Vagalume" type="Node2D"]
+script = ExtResource("1_vagalume")
+pet_id = &"vagalume"
+display_name = "Vagalume"
+color = Color(1, 0.88, 0.35, 1)
+exploration_ability = &"light"
+
+[node name="Shadow" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0.5)
+script = ExtResource("2_shadow")
+radius = Vector2(4, 1.5)
+
+[node name="Visual" type="Node2D" parent="."]
+position = Vector2(0, -12)
+
+[node name="Sprite" type="Sprite2D" parent="Visual"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_flash")
+position = Vector2(0, -6)
+texture = ExtResource("4_dungeon")
+region_enabled = true
+region_rect = Rect2(16, 160, 16, 16)
+
+[node name="Lamp" type="PointLight2D" parent="."]
+position = Vector2(0, -18)
+energy = 0.5
+texture = SubResource("GradientTexture2D_lamp")
+texture_scale = 1.1
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("5_hurtbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -16)
+shape = SubResource("CircleShape2D_hurt")
+
+[node name="LightBar" type="Node" parent="."]
+script = ExtResource("6_health")
+max_health = 6

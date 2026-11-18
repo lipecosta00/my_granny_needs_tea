@@ -3,7 +3,7 @@ extends HBoxContainer
 ## Hearts HUD (Tiny Battle heart). One heart = 2 health units (half hearts).
 
 const ATLAS := preload("res://assets/kenney/tiny_battle/tilemap_packed.png")
-const HEART_REGION := Rect2(14 * 16, 10 * 16, 16, 16)
+const HEART_REGION := Rect2(15 * 16, 10 * 16, 16, 16)
 const EMPTY_TINT := Color(0.25, 0.12, 0.2, 0.9)
 
 var _health: Health

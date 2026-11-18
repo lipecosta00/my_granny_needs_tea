@@ -73,6 +73,11 @@ SOUNDS = {
     "enemy_die": (0.30, tone_sweep(260, 40, noise=0.6, lowpass=0.4), 0.55),
     "charge_ready": (0.16, blips([880, 1320], 0.08), 0.35),
     "spider_warn": (0.12, tone_sweep(500, 900, noise=0.05), 0.25),
+    "spark": (0.07, tone_sweep(1400, 2200, wave_fn=lambda p: math.sin(p * math.tau)), 0.25),
+    "flash": (0.35, blips([660, 880, 1320, 1760], 0.07), 0.4),
+    "gate_open": (0.6, blips([392, 523, 659, 784, 1047], 0.11), 0.35),
+    "pet_out": (0.4, tone_sweep(600, 150, wave_fn=lambda p: math.sin(p * math.tau)), 0.35),
+    "fizzle": (0.12, tone_sweep(160, 110, noise=0.3, lowpass=0.3), 0.3),
 }
 
 

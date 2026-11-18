@@ -59,11 +59,28 @@ const MAPS := [
 		"layout": "res://src/world/maps/dark_forest/dark_forest.layout.txt",
 		"out": "res://src/world/maps/dark_forest/dark_forest.tscn",
 		"tint": Color(0.42, 0.36, 0.58),
+		# PetGates: rect in cells. Darkness on the west exit to the Bosque
+		# dos Cogumelos, cleared by the Vagalume's Luz (GDD "Mundo").
+		"gates": [
+			{"id": &"dark_forest/bosque_darkness", "ability": &"light", "rect": Rect2i(0, 15, 3, 4)},
+		],
 	},
 ]
 
 
+## Gameplay scripts are loaded at runtime, not referenced by class name: this
+## main-loop script compiles before autoloads (Fx, GameState) exist, and
+## static references would drag those scripts into that early compile.
+const GAME_MAP_SCRIPT := "res://src/world/game_map.gd"
+const PET_GATE_SCRIPT := "res://src/world/pet_gate.gd"
+const DEFAULT_SPAWN := "Default"  # GameMap.DEFAULT_SPAWN
+
+
 func _init() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
 	var tileset := build_tileset()
 	var err := save_deterministic(tileset, TILESET_PATH)
 	if err != OK:
@@ -156,7 +173,7 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 		push_error("empty layout: %s" % spec.layout)
 		return ERR_INVALID_DATA
 
-	var root := GameMap.new()
+	var root: Node2D = load(GAME_MAP_SCRIPT).new()
 	root.name = spec.name
 
 	var tint := CanvasModulate.new()
@@ -202,7 +219,7 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 	spawns.name = "Spawns"
 	_own(root, root, spawns)
 	var default_spawn := Marker2D.new()
-	default_spawn.name = String(GameMap.DEFAULT_SPAWN)
+	default_spawn.name = DEFAULT_SPAWN
 	default_spawn.position = _feet_position(spawn)
 	_own(root, spawns, default_spawn)
 	if not enemy_cells.is_empty():
@@ -215,6 +232,21 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 			marker.position = _feet_position(entry[0])
 			marker.set_meta(&"enemy", entry[1])
 			_own(root, enemies, marker)
+
+	var gate_specs: Array = spec.get("gates", [])
+	if not gate_specs.is_empty():
+		var gates := Node2D.new()
+		gates.name = "Gates"
+		_own(root, root, gates)
+		for gate_spec: Dictionary in gate_specs:
+			var gate: StaticBody2D = load(PET_GATE_SCRIPT).new()
+			gate.name = String(gate_spec.id).get_file().to_pascal_case()
+			gate.gate_id = gate_spec.id
+			gate.required_ability = gate_spec.ability
+			var rect: Rect2i = gate_spec.rect
+			gate.position = Vector2(rect.position * TILE)
+			gate.size = Vector2(rect.size * TILE)
+			_own(root, gates, gate)
 
 	root.ground = ground
 	root.actors = world

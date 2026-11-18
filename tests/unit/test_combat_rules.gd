@@ -55,6 +55,12 @@ func test_stunned_target_takes_double_from_hero_only() -> void:
 	assert_eq(HitData.resolve_damage(from_enemy, true), 1)
 
 
+func test_pet_hits_do_not_get_the_stun_bonus() -> void:
+	var spark := HitData.make(1, Vector2.ZERO, HitData.Team.HERO)
+	spark.from_pet = true
+	assert_eq(HitData.resolve_damage(spark, true), 1)
+
+
 func test_big_impact_needs_charged_and_stunned() -> void:
 	var hit := HitData.make(3, Vector2.ZERO, HitData.Team.HERO)
 	assert_false(HitData.is_big_impact(hit, true))

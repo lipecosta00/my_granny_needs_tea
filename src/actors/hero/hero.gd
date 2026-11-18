@@ -8,6 +8,8 @@ extends CharacterBody2D
 signal facing_changed(facing: Vector2)
 signal state_changed(state: State)
 signal died
+## RB (GDD: "Habilidade do pet"). The active pet decides combat vs exploration.
+signal pet_ability_pressed
 
 enum State { MOVE, SWING, CHARGING, DASH, ROLL, HURT, DEAD }
 
@@ -313,7 +315,11 @@ func _collect_buffered_input() -> void:
 	if not input_enabled:
 		return
 	for action in presses:
-		_buffer.press(action, _clock)
+		if action == &"pet_ability":
+			if state != State.DEAD:
+				pet_ability_pressed.emit()
+		else:
+			_buffer.press(action, _clock)
 
 
 func _weapon_for(action: StringName) -> WeaponData:

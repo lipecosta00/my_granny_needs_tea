@@ -23,6 +23,15 @@ Design completo em [`My granny needs tea - GDD do MVP.md`](My%20granny%20needs%2
 - [x] Corações (meio coração por golpe) e game over com volta à entrada do mapa
 - [ ] Portão: derrotar 3 aranhas já é divertido? (ajustar números `@export` jogando)
 
+**Marco 3 — Primeiro pet** (código pronto; falta o portão)
+
+- [x] Vagalume: segue 1,5 tile atrás, atravessa obstáculos (espectral), volta por teleporte além de 8 tiles
+- [x] Faíscas teleguiadas no inimigo mais próximo (5 tiles) a cada 1,2 s, sem passar de 6 tiles do herói
+- [x] RB contextual: Clarão (atordoa em 3 tiles por 1,5 s, recarga 8 s) ou Luz perto de um portão de escuridão
+- [x] Portões de pet ficam abertos para sempre (`GameState`, pronto para o save)
+- [x] Barra de luz: o pet apaga por 5 s e volta sozinho · retrato do pet com recarga no HUD
+- [ ] Portão: a dupla é mais divertida que o herói sozinho?
+
 ## Rodando
 
 Abra a pasta no Godot 4.3+ e aperte F5.
@@ -32,6 +41,7 @@ Abra a pasta no Godot 4.3+ e aperte F5.
 | Andar | Analógico esquerdo | WASD / setas |
 | Atacar (segurar = carregado) | X / Quadrado | J |
 | Rolar | B / Círculo | Espaço |
+| Habilidade do pet | RB / R1 | R |
 
 Linha de comando (o binário do Godot precisa estar no PATH como `godot`):
 
@@ -51,14 +61,14 @@ O build web precisa ser servido por HTTP (ex.: `python -m http.server` dentro de
 ```
 assets/kenney/        Tilesheets Tiny (CC0), atlas 16x16 sem espaçamento
 assets/sfx/           Efeitos sintetizados (tools/audio/gen_sfx.py)
-src/actors/           TopDownMotor, WalkBounce, herói, inimigos (Enemy + Spider)
-src/autoload/         Fx (hitstop, tremor, números, partículas, som, vibração), Settings
+src/actors/           TopDownMotor, WalkBounce, herói, inimigos (Enemy + Spider), pets (Pet + Vagalume)
+src/autoload/         Fx (hitstop, tremor, números, partículas, som, vibração), Settings, GameState
 src/combat/           HitData, Hitbox, Hurtbox, Health
 src/core/             Câmera, sombra, InputBuffer
 src/weapons/          WeaponData (.tres por arma)
 src/game/             Game: dono do herói, câmera e HUD, carrega mapas
 src/ui/               HUD (corações)
-src/world/            GameMap (base), tileset e mapas gerados
+src/world/            GameMap (base), PetGate, tileset e mapas gerados
 tools/                setup_input_map.gd, bake_maps.gd, audio/gen_sfx.py
 tests/                Runner headless + testes (CI)
 ```

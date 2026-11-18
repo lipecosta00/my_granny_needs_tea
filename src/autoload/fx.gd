@@ -12,6 +12,11 @@ const SFX := {
 	&"enemy_die": preload("res://assets/sfx/enemy_die.wav"),
 	&"charge_ready": preload("res://assets/sfx/charge_ready.wav"),
 	&"spider_warn": preload("res://assets/sfx/spider_warn.wav"),
+	&"spark": preload("res://assets/sfx/spark.wav"),
+	&"flash": preload("res://assets/sfx/flash.wav"),
+	&"gate_open": preload("res://assets/sfx/gate_open.wav"),
+	&"pet_out": preload("res://assets/sfx/pet_out.wav"),
+	&"fizzle": preload("res://assets/sfx/fizzle.wav"),
 }
 const DIGITS := preload("res://assets/kenney/tiny_battle/tilemap_packed.png")
 const DIGIT_ROW := 10  # Tiny Battle: digits 0-9 at (0..9, 10)
@@ -115,6 +120,19 @@ func damage_number(world_pos: Vector2, amount: int, color := Color.WHITE) -> voi
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(number, "modulate:a", 0.0, 0.2).set_delay(0.3)
 	tween.tween_callback(number.queue_free)
+
+
+## Expanding ring (Clarão, gate opening). Drawn untinted on the Fx layer.
+func ring(world_pos: Vector2, radius: float, color: Color, duration := 0.3) -> void:
+	var ring_node := RingFx.new()
+	ring_node.position = world_pos
+	ring_node.color = color
+	_layer.add_child(ring_node)
+	var tween := ring_node.create_tween()
+	tween.tween_property(ring_node, "radius", radius, duration) \
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(ring_node, "modulate:a", 0.0, duration).set_delay(duration * 0.4)
+	tween.tween_callback(ring_node.queue_free)
 
 
 ## Square-pixel burst for hits and deaths.
