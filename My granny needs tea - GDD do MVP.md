@@ -41,15 +41,15 @@ Uma tarefa boba de neto, buscar ingredientes para o chá da vó, vira uma rotina
 | Pedido | Material | Área | Pet que abre o caminho | Recompensa |
 | --- | --- | --- | --- | --- |
 | 1 | Cogumelo | Bosque dos Cogumelos | Vagalume (luz no bosque sombrio) | Barqueira |
-| 2 | Musgo de árvore morta | Pântano | Barqueira (ponte de névoa no canal) | Em aberto (ver abaixo) |
-| 3 | Osso | Cemitério (chefe) | Barqueira (ponte até o cemitério) | O chá (final) |
+| 2 | Musgo de árvore morta | Pântano | Barqueira (ponte de névoa no canal) | Toupeira |
+| 3 | Osso | Cemitério (chefe) | Toupeira (túnel sob a grade do cemitério) | O chá (final) |
+
+**Portão aberto fica aberto.** Depois que um pet abre um caminho (área iluminada, ponte, túnel), ele continua aberto para sempre e entra no save. Assim a troca de pet é uma escolha de combate, não uma obrigação de ida e volta.
 
 **Tom:** humor de contraste. Ninguém estranha a vó bruxa, ninguém estranha que o "chá" cria bichos, e o "chazinho" claramente é uma poção. O medo nunca é pesado: o susto vem do clima, não de gore.
 
 **Em aberto**
 
-- **Recompensa do pedido 2.** (A) Um terceiro pet, que deixa o loop "cada entrega vira um pet" completo, mas soma um pet ao escopo. (B) Manter dois pets e o musgo melhorar um pet existente. Proposta: (A), com o terceiro pet abrindo o cemitério no lugar da Barqueira.
-- **Portão aberto fica aberto (proposta).** Depois que um pet abre um caminho (ponte, área iluminada), ele continua aberto. Assim a troca de pet é uma escolha de combate e não obriga idas e voltas.
 - **O final.** Proposta: os pets são almas de parentes (ou dos bichos da família) que a vó está trazendo de volta, e o "chá" é o último passo do ritual. Dá um fechamento agridoce e uma segunda leitura para o título: a vó nunca precisou do chá, precisava deles.
 
 ## Loop principal
@@ -120,17 +120,20 @@ Os pets são criaturas espectrais que a vó traz à vida no caldeirão. Cada um 
 | --- | --- | --- | --- | --- |
 | Vagalume (amarela) | A vó dá no início | Faíscas no inimigo mais próximo, a cada 1,2 s | Clarão: atordoa os inimigos num raio de 3 tiles por 1,5 s. Recarga de 8 s | Luz: ilumina áreas escuras e revela espectros invisíveis |
 | Barqueira (azul) | Pedido 1 (cogumelo) | Onda curta que empurra o inimigo, a cada 1,5 s | Remo: puxa os inimigos de um cone na frente do herói. Recarga de 8 s | Ponte de névoa: atravessa água nos pontos marcados |
+| Toupeira (verde-musgo) | Pedido 2 (musgo) | Mordida: avança no inimigo mais próximo e volta, a cada 1,4 s | Tremor: onda em linha na frente do herói que atordoa por 1,2 s. Recarga de 8 s | Túnel: cava sob grades e cercas nos montes de terra marcados |
+
+**RB é contextual:** perto de um portão que o pet ativo sabe abrir, o RB usa a habilidade de exploração; no resto do tempo, a de combate. Um brilho no portão avisa quando o pet certo está perto.
 
 **Troca de pet:** o caldeirão da vó abre a tela de escolha, com os pets criados, as habilidades deles e qual vai junto. Os pets que ficam em casa flutuam pela sala. Fora da casa da vó não há troca.
 
 **Comportamento**
 
-- **Seguir:** flutua a 1,5 tile atrás do herói e contorna obstáculos com `NavigationAgent2D`.
+- **Seguir:** flutua a 1,5 tile atrás do herói. Como é espectral, atravessa árvores e paredes, então não precisa de `NavigationAgent2D` e não tem como ficar preso.
 - **Atacar:** escolhe o inimigo mais próximo num raio de 5 tiles e nunca se afasta mais de 6 tiles do herói.
-- **Voltar:** se ficar preso ou longe demais, some e reaparece ao lado do herói. Pet travado em parede estraga a experiência, então o teleporte é a rede de segurança.
+- **Voltar:** se ficar longe demais (8 tiles), some e reaparece ao lado do herói.
 - **Cair:** pets não morrem. Ao perder a "luz" (barra própria), ficam apagados por 5 s e voltam sozinhos.
 
-**Como nasce um pet:** o jogador entrega o material, a vó joga no caldeirão e uma cutscene curta mostra a magiquinha e o pet surgindo. A habilidade de exploração é ensinada por uma placa de tutorial no primeiro ponto em que ela é necessária (a luz na entrada do bosque sombrio, a ponte no canal do pântano).
+**Como nasce um pet:** o jogador entrega o material, a vó joga no caldeirão e uma cutscene curta mostra a magiquinha e o pet surgindo. A habilidade de exploração é ensinada por uma placa de tutorial no primeiro ponto em que ela é necessária (a luz na entrada do bosque sombrio, a ponte no canal do pântano, o túnel na grade do cemitério).
 
 **Visual:** o fantasma branco do Tiny Dungeon com `modulate` de cor e uma `PointLight2D` suave. Ele balança com um seno em `position.y`, sem precisar de animação desenhada.
 
@@ -153,15 +156,15 @@ Sete inimigos comuns e um chefe, todos com sprites do Tiny Dungeon. Cada inimigo
 **Chefe: o Coveiro** (sprite encapuzado, Tiny Dungeon (3,9), em escala 2x). Vida 40, duas fases, na arena em frente à capela.
 
 1. **Fase 1:** golpes de pá em área com aviso no chão, e a cada 30% de vida perdida ele invoca 2 espectros.
-2. **Fase 2 (abaixo de 50%):** apaga as velas e a arena escurece. Como só um pet vem junto, qualquer pet vence, cada um de um jeito: a luz da Vagalume mostra onde ele está, e o Remo da Barqueira puxa ele das lápides onde se esconde. Acender as velas com golpes também revela o Coveiro por alguns segundos.
+2. **Fase 2 (abaixo de 50%):** apaga as velas e a arena escurece. Como só um pet vem junto, qualquer pet vence, cada um de um jeito: a luz da Vagalume mostra onde ele está, o Remo da Barqueira puxa ele das lápides onde se esconde, e o Tremor da Toupeira derruba as lápides. Acender as velas com golpes também revela o Coveiro por alguns segundos.
 
 Ao cair, ele larga o **osso**, o terceiro item. A arena fica trancada até o fim da luta.
 
 ## Mundo
 
-&#91;embedded content: progressão · 7 mapas, 2 portões de pet\]
+&#91;embedded content: progressão · 7 mapas, 3 portões de pet\]
 
-Os 7 mapas já existem em JSON com importador para o Godot. A Floresta Escura distribui o jogador para as três áreas, e as setas tracejadas mostram a dependência: a luz da Vagalume abre o Bosque dos Cogumelos, e a ponte da Barqueira abre o pântano e o caminho do cemitério. Todo portão é validado por script, então não existe atalho que pule um pedido da vó. A casa da vó é o ponto de troca de pet, então o caminho de volta até ela precisa ser curto (ledges como atalho).
+Os 7 mapas já existem em JSON com importador para o Godot. A Floresta Escura distribui o jogador para as três áreas, e as setas tracejadas mostram a dependência: a luz da Vagalume abre o Bosque dos Cogumelos, a ponte da Barqueira abre o pântano e o túnel da Toupeira abre o cemitério. Todo portão é validado por script, então não existe atalho que pule um pedido da vó. A casa da vó é o ponto de troca de pet, então o caminho de volta até ela precisa ser curto (ledges como atalho).
 
 **Estrutura de cada mapa:** estilo Pokémon de GBA, com bordas de árvores, trilhas retas, mato alto onde surgem inimigos, ledges como atalho de volta e uma clareira secreta com baú na floresta. Os mapas atuais serão refeitos nesse formato, começando pela Floresta Escura.
 
@@ -259,7 +262,7 @@ O MVP é a história completa do começo ao fim, curta e polida. Tudo que aument
 | Dentro do MVP | Fora do MVP (versão 2 ou nunca) |
 | --- | --- |
 | 7 mapas: casa, vila, casa da vó, floresta, bosque, pântano, cemitério | Mais biomas e mapas gerados a cada partida |
-| 2 pets (Vagalume e Barqueira), um ativo por vez, trocados só na casa da vó | Coleção grande de pets, evolução, árvore de habilidades |
+| 3 pets (Vagalume, Barqueira e Toupeira), um ativo por vez, trocados só na casa da vó | Coleção grande de pets, evolução, árvore de habilidades |
 | 3 pedidos da vó com caldeirão | Pedidos opcionais, receitas |
 | 3 armas (espada, machado, cajado) | Forja, melhorias, raridade de itens |
 | 7 inimigos e 1 chefe | Mais chefes, inimigos de elite |
@@ -281,7 +284,7 @@ Seis marcos em sequência, cada um com um portão: só se passa para o próximo 
    - Portão: derrotar 3 aranhas já é divertido só com quadrados cinzas no fundo.
 3. **Primeiro pet.** Vagalume seguindo, atacando sozinha, Clarão e Luz.
    - Portão: a dupla é mais divertida que o herói sozinho. Se não for, ajustar antes de seguir.
-4. **Conteúdo.** Os 7 mapas, a roda de armas, machado e cajado, pedidos da vó com caldeirão e troca de pet, Barqueira e os 7 inimigos.
+4. **Conteúdo.** Os 7 mapas, a roda de armas, machado e cajado, pedidos da vó com caldeirão e troca de pet, Barqueira, Toupeira e os 7 inimigos.
    - Portão: dá pra ir da casa ao cemitério sem travar.
 5. **História e chefe.** Cutscenes, diálogos, o Coveiro e o final.
    - Portão: alguém de fora termina o jogo sem ajuda.

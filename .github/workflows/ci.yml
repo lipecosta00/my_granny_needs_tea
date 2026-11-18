@@ -43,6 +43,7 @@ jobs:
       - name: Export Web (single-threaded)
         run: |
           mkdir -p build/web
+          touch build/.gdignore  # keep Godot from importing its own output
           godot --headless --path . --export-release "Web" build/web/index.html
           test -f build/web/index.wasm
 

@@ -43,6 +43,7 @@ godot --headless --path . -s tests/run_tests.gd
 godot --headless --path . --export-release "Web" build/web/index.html
 ```
 
+Antes do primeiro export, crie `build/.gdignore` (vazio) para o Godot não importar a própria saída.
 O build web precisa ser servido por HTTP (ex.: `python -m http.server` dentro de `build/web`).
 
 ## Estrutura
