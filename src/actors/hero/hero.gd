@@ -128,6 +128,12 @@ func slow(factor: float, duration: float) -> void:
 	_slow_until = maxf(_slow_until, _clock + duration)
 
 
+## True while the player holds the stick/keys toward [param direction]
+## (doors open when you walk into them, even though the door blocks you).
+func is_pushing(direction: Vector2) -> bool:
+	return _move_input().dot(direction) > 0.5
+
+
 func speed_multiplier() -> float:
 	return _slow_factor if _clock < _slow_until else 1.0
 

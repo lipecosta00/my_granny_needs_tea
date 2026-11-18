@@ -32,7 +32,7 @@ position = Vector2(152, 78)
 script = ExtResource("3_3")
 npc_name = "Vó"
 sprite_region = Rect2(0, 112, 16, 16)
-lines = PackedStringArray()
+dialogue_id = &""
 
 [node name="Cauldron" type="StaticBody2D" parent="World"]
 position = Vector2(120, 62)
@@ -54,3 +54,4 @@ script = ExtResource("5_5")
 target_map = &"vila"
 target_spawn = &"from_vo"
 size = Vector2(16, 16)
+required_facing = Vector2(0, 0)

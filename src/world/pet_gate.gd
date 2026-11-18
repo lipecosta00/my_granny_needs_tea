@@ -14,6 +14,8 @@ var is_open := false
 var _clock := 0.0
 var _fade := 1.0
 var _hint := 0.0
+## 0..1: hero is close but the active pet can't open this gate.
+var _wrong_pet := 0.0
 var _shape: CollisionShape2D
 
 
@@ -29,6 +31,13 @@ func _ready() -> void:
 	add_child(_shape)
 	if GameState.is_gate_open(gate_id):
 		_set_open(false)
+
+
+func _active_pet_can_open() -> bool:
+	for pet: Node in get_tree().get_nodes_in_group(&"pets"):
+		if pet.get(&"exploration_ability") == required_ability:
+			return true
+	return false
 
 
 func distance_to_point(point: Vector2) -> float:
@@ -68,6 +77,11 @@ func _process(delta: float) -> void:
 			if pet.find_openable_gate() == self:
 				target_hint = 1.0
 	_hint = move_toward(_hint, target_hint, delta * 3.0)
+	var show_needed := false
+	if not is_open and not _active_pet_can_open():
+		for hero: Node2D in get_tree().get_nodes_in_group(&"hero"):
+			show_needed = distance_to_point(hero.global_position) <= 72.0
+	_wrong_pet = move_toward(_wrong_pet, 1.0 if show_needed else 0.0, delta * 3.0)
 	queue_redraw()
 
 
@@ -80,6 +94,20 @@ func _draw() -> void:
 		_:
 			_draw_darkness()
 	_draw_hint()
+	_draw_needed_pet()
+
+
+## Floating ghost in the colour of the pet that opens this gate — tells the
+## player which pet to bring from granny's cauldron (playtest: the canal).
+func _draw_needed_pet() -> void:
+	if _wrong_pet <= 0.0 or is_open:
+		return
+	const ATLAS := preload("res://assets/kenney/tiny_dungeon/tilemap_packed.png")
+	var at := Vector2(size.x / 2.0 - 8.0, -18.0 + sin(_clock * 3.0) * 2.0)
+	draw_circle(at + Vector2(8, 8), 10.0, Color(0.05, 0.02, 0.1, 0.6 * _wrong_pet))
+	var tint := PetCatalog.color_for_ability(required_ability)
+	tint.a = _wrong_pet
+	draw_texture_rect_region(ATLAS, Rect2(at, Vector2(16, 16)), Rect2(16, 160, 16, 16), tint)
 
 
 ## Living darkness: overlapping blobs that breathe.

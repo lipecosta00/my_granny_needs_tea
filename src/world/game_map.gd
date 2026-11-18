@@ -6,6 +6,9 @@ extends Node2D
 
 const DEFAULT_SPAWN := &"Default"
 
+## Debug --peaceful: maps load without enemies (isolates movement tests).
+static var spawn_enemies_enabled := true
+
 ## A MapExit was crossed (Game fades to the target map).
 signal exit_requested(target_map: StringName, target_spawn: StringName)
 
@@ -29,7 +32,7 @@ func _ready() -> void:
 ## are created fresh on every map load (re-entering repopulates the route).
 func _spawn_enemies() -> void:
 	var markers := spawns.get_node_or_null(^"Enemies") if spawns else null
-	if markers == null:
+	if markers == null or not spawn_enemies_enabled:
 		return
 	for marker: Node2D in markers.get_children():
 		for enemy in EnemyCatalog.spawn(marker.get_meta(&"enemy", &"")):

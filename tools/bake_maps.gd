@@ -88,7 +88,6 @@ const STAMPS := {
 		[Vector2i(4, 5), Vector2i(5, 5), Vector2i(6, 5)],
 		[Vector2i(4, 7), Vector2i(5, 7), Vector2i(4, 7)]],  # neighbours
 }
-const STAMP_DOOR_TILES := [Vector2i(1, 7), Vector2i(5, 7)]
 
 ## Map specs. Cells are in tiles. Exits: rect + target map/spawn. Spawns:
 ## named arrival points (Default = '@' in the layout).
@@ -98,18 +97,16 @@ const MAPS := [
 		"tint": Color(0.95, 0.88, 0.8),
 		"spawns": {"from_vila": Vector2i(6, 6)},
 		"exits": [{"rect": Rect2i(6, 8, 1, 1), "map": &"vila", "spawn": &"from_casa"}],
-		"npcs": [{"kind": "npc", "node": "Mom", "cell": Vector2i(8, 4), "name": "Mãe", "region": Rect2(48, 128, 16, 16),
-			"lines": ["Bom dia, dorminhoco!",
-				"Sua vó ligou. Disse que precisa de ajuda com um tal de \"chazinho\".",
-				"A casa dela é aquela meio... assombrada, do outro lado da vila. Leva um casaco!"]}],
+		"npcs": [{"kind": "npc", "node": "Mom", "cell": Vector2i(8, 4), "name": "Mãe",
+			"region": Rect2(48, 128, 16, 16), "dialogue": &"mom"}],
 	},
 	{
 		"id": &"vila", "name": "Vila",
 		"tint": Color(0.62, 0.55, 0.72),
 		"spawns": {"from_casa": Vector2i(5, 10), "from_vo": Vector2i(22, 8), "from_floresta": Vector2i(14, 2)},
 		"exits": [
-			{"rect": Rect2i(5, 8, 1, 1), "map": &"casa", "spawn": &"from_vila"},
-			{"rect": Rect2i(22, 6, 1, 1), "map": &"casa_da_vo", "spawn": &"from_vila"},
+			{"rect": Rect2i(5, 9, 1, 1), "map": &"casa", "spawn": &"from_vila", "facing": Vector2.UP},
+			{"rect": Rect2i(22, 7, 1, 1), "map": &"casa_da_vo", "spawn": &"from_vila", "facing": Vector2.UP},
 			{"rect": Rect2i(13, 0, 4, 1), "map": &"dark_forest", "spawn": &"from_vila"},
 		],
 	},
@@ -251,7 +248,10 @@ func build_tileset() -> TileSet:
 	for stamp: Array in STAMPS.values():
 		for row: Array in stamp:
 			for coords: Vector2i in row:
-				_add_tile(ts, [Src.TOWN, coords], [] if coords in STAMP_DOOR_TILES else FULL)
+				# Doors are solid too: you enter from the cell in front, walking
+				# up (MapExit.required_facing), so the hero never stands inside
+				# a house — playtest: "o personagem fica dentro das casas".
+				_add_tile(ts, [Src.TOWN, coords], FULL)
 	for terrain: String in NINE_SLICE:
 		var src: int = NINE_SLICE[terrain][0]
 		var origin: Vector2i = NINE_SLICE[terrain][1]
@@ -380,7 +380,7 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 		npc.name = npc_spec.node  # ASCII node name; npc_name is what players read
 		npc.npc_name = npc_spec.name
 		npc.sprite_region = npc_spec.region
-		npc.lines = PackedStringArray(npc_spec.get("lines", []))
+		npc.dialogue_id = npc_spec.get("dialogue", &"")
 		npc.position = _feet_position(npc_spec.cell)
 		_own(root, world, npc)
 
@@ -408,6 +408,7 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 			exit.name = "To_" + String(exit_spec.map).to_pascal_case()
 			exit.target_map = exit_spec.map
 			exit.target_spawn = exit_spec.spawn
+			exit.required_facing = exit_spec.get("facing", Vector2.ZERO)
 			var rect: Rect2i = exit_spec.rect
 			exit.position = Vector2(rect.position * TILE)
 			exit.size = Vector2(rect.size * TILE)

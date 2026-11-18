@@ -31,7 +31,7 @@ position = Vector2(136, 78)
 script = ExtResource("3_3")
 npc_name = "Mãe"
 sprite_region = Rect2(48, 128, 16, 16)
-lines = PackedStringArray("Bom dia, dorminhoco!", "Sua vó ligou. Disse que precisa de ajuda com um tal de \"chazinho\".", "A casa dela é aquela meio... assombrada, do outro lado da vila. Leva um casaco!")
+dialogue_id = &"mom"
 
 [node name="Spawns" type="Node2D" parent="."]
 
@@ -49,3 +49,4 @@ script = ExtResource("4_4")
 target_map = &"vila"
 target_spawn = &"from_casa"
 size = Vector2(16, 16)
+required_facing = Vector2(0, 0)

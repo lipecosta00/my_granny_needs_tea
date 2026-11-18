@@ -124,7 +124,7 @@ Os pets são criaturas espectrais que a vó traz à vida no caldeirão. Cada um 
 
 **RB é contextual:** perto de um portão que o pet ativo sabe abrir, o RB usa a habilidade de exploração; no resto do tempo, a de combate. Um brilho no portão avisa quando o pet certo está perto.
 
-**Troca de pet:** o caldeirão da vó abre a tela de escolha, com os pets criados, as habilidades deles e qual vai junto. Os pets que ficam em casa flutuam pela sala. Fora da casa da vó não há troca.
+**Troca de pet:** o caldeirão da vó abre a tela de escolha, com os pets criados, as habilidades deles e qual vai junto. O pet recém-criado já sai com você, porque o próximo pedido precisa dele. Fora da casa da vó não há troca. Perto de um portão, se o pet ativo não for o certo, o portão mostra o fantasma do pet que o abre.
 
 **Comportamento**
 
@@ -134,6 +134,8 @@ Os pets são criaturas espectrais que a vó traz à vida no caldeirão. Cada um 
 - **Cair:** pets não morrem. Ao perder a "luz" (barra própria), ficam apagados por 5 s e voltam sozinhos.
 
 **Como nasce um pet:** o jogador entrega o material, a vó joga no caldeirão e uma cutscene curta mostra a magiquinha e o pet surgindo. A habilidade de exploração é ensinada por uma placa de tutorial no primeiro ponto em que ela é necessária (a luz na entrada do bosque sombrio, a ponte no canal do pântano, o túnel na grade do cemitério).
+
+**Portas:** como nos Pokémon de GBA, a porta é sólida e você entra andando para cima, parado na frente dela.
 
 **Visual:** o fantasma branco do Tiny Dungeon com `modulate` de cor e uma `PointLight2D` suave. Ele balança com um seno em `position.y`, sem precisar de animação desenhada.
 

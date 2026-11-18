@@ -37,8 +37,8 @@ static func plan(stage: int, requested: StringName, has_requested: bool) -> Dict
 static func after_delivery_lines(reward_pet: StringName, next_request: StringName) -> Array:
 	var lines := []
 	if reward_pet != &"":
-		lines.append("Olha só quem acordou! A %s vai te acompanhar." % PET_NAMES.get(reward_pet, String(reward_pet)))
-		lines.append("Pra trocar de pet, é só mexer no caldeirão.")
+		lines.append("Olha só quem acordou! A %s vai com você agora." % PET_NAMES.get(reward_pet, String(reward_pet)))
+		lines.append("Quer outro pet? É só mexer no caldeirão.")
 	if next_request != &"":
 		lines.append("Agora preciso de %s. %s" % [ItemCatalog.display_name(next_request), WHERE.get(next_request, "")])
 	else:
@@ -62,6 +62,9 @@ func interact(hero: Node) -> void:
 		&"deliver":
 			var reward := GameState.deliver_requested()
 			_magic()
+			if reward != &"":
+				# The next request needs the new pet's ability: take it along.
+				get_tree().call_group(&"game", &"set_active_pet", reward)
 			Dialogue.say(_speech(after_delivery_lines(reward, GameState.requested_item())))
 
 

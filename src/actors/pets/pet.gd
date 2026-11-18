@@ -34,7 +34,9 @@ signal out_changed(is_out: bool)
 @export var ability_cooldown := 8.0
 @export var out_duration := 5.0
 ## How close the hero must be to a gate for RB to use the exploration ability.
-@export var gate_reach := 40.0
+## Generous on purpose: at 40 px, pressing RB a few tiles from the canal used
+## the Remo instead of the bridge (playtest).
+@export var gate_reach := 64.0
 
 var hero: Hero
 var velocity := Vector2.ZERO

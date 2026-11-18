@@ -42,18 +42,20 @@ position = Vector2(232, 46)
 [node name="Exits" type="Node2D" parent="."]
 
 [node name="To_Casa" type="Node2D" parent="Exits"]
-position = Vector2(80, 128)
+position = Vector2(80, 144)
 script = ExtResource("3_3")
 target_map = &"casa"
 target_spawn = &"from_vila"
 size = Vector2(16, 16)
+required_facing = Vector2(0, -1)
 
 [node name="To_CasaDaVo" type="Node2D" parent="Exits"]
-position = Vector2(352, 96)
+position = Vector2(352, 112)
 script = ExtResource("3_3")
 target_map = &"casa_da_vo"
 target_spawn = &"from_vila"
 size = Vector2(16, 16)
+required_facing = Vector2(0, -1)
 
 [node name="To_DarkForest" type="Node2D" parent="Exits"]
 position = Vector2(208, 0)
@@ -61,3 +63,4 @@ script = ExtResource("3_3")
 target_map = &"dark_forest"
 target_spawn = &"from_vila"
 size = Vector2(64, 16)
+required_facing = Vector2(0, 0)

@@ -82,3 +82,4 @@ script = ExtResource("5_5")
 target_map = &"dark_forest"
 target_spawn = &"from_bosque"
 size = Vector2(16, 64)
+required_facing = Vector2(0, 0)

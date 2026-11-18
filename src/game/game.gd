@@ -156,7 +156,7 @@ func _on_hero_died() -> void:
 	await _fade_to(0.0)
 
 
-## Debug builds only: --map=<id> [--spawn=<name>] [--pets=all] jumps
+## Debug builds only: --map=<id> [--spawn=<name>] [--pets=all [--pet=<id>]] jumps
 ## straight to a map (handy for playtesting one area).
 func _apply_debug_args() -> bool:
 	var args := {}
@@ -165,11 +165,12 @@ func _apply_debug_args() -> bool:
 			args[arg.substr(2, arg.find("=") - 2)] = arg.substr(arg.find("=") + 1)
 	if not args.has("map"):
 		return false
+	GameMap.spawn_enemies_enabled = args.get("peaceful", "") != "1"
 	if args.get("pets", "") == "all":
 		GameState.quest_stage = 3
 		for pet_id: StringName in PetCatalog.SCENES:
 			GameState.unlock_pet(pet_id)
-		set_active_pet(GameState.active_pet)
+		set_active_pet(StringName(args.get("pet", String(GameState.active_pet))))
 	# Without --spawn, arrive the way a player would (from the forest).
 	var scene := MapCatalog.load_scene(StringName(args.map))
 	var spawn := String(args.get("spawn", ""))

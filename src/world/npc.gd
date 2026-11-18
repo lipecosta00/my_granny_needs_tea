@@ -6,7 +6,8 @@ const ATLAS := preload("res://assets/kenney/tiny_dungeon/tilemap_packed.png")
 
 @export var npc_name := ""
 @export var sprite_region := Rect2(48, 128, 16, 16)
-@export var lines: PackedStringArray = []
+## Key into DialogueLines.NPC (text is kept out of scenes on purpose).
+@export var dialogue_id: StringName
 
 var _sprite: Sprite2D
 var _clock := 0.0
@@ -43,7 +44,7 @@ func can_interact(_hero: Node) -> bool:
 func interact(hero: Node) -> void:
 	if hero is Node2D:
 		_sprite.flip_h = (hero as Node2D).global_position.x < global_position.x
-	Dialogue.say(_speech(lines))
+	Dialogue.say(_speech(DialogueLines.for_npc(dialogue_id)))
 
 
 func _speech(texts: Array) -> Array:
