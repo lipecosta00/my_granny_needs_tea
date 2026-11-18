@@ -32,6 +32,16 @@ Design completo em [`My granny needs tea - GDD do MVP.md`](My%20granny%20needs%2
 - [x] Barra de luz: o pet apaga por 5 s e volta sozinho · retrato do pet com recarga no HUD
 - [ ] Portão: a dupla é mais divertida que o herói sozinho?
 
+**Marco 4 — Conteúdo** (código pronto; falta o portão)
+
+- [x] Roda de armas (LB, tempo a 20%), machado (giro 360°) e cajado (projétil, leque); baús
+- [x] Morcego, bando de ratos, lesma de lodo, caranguejo, espectro (e invisível), ciclope
+- [x] Barqueira (onda, Remo, ponte de névoa) e Toupeira (mordida, Tremor, túnel)
+- [x] 7 mapas: casa, vila, casa da vó, Floresta Escura, Bosque, Pântano, Cemitério
+- [x] Saídas com fade, save automático na troca de mapa, diálogos, pedidos da vó e caldeirão
+- [x] Teste de progressão do mundo: cada material só com os pets que a vó já criou
+- [ ] Portão: dá pra ir da casa ao cemitério sem travar?
+
 ## Rodando
 
 Abra a pasta no Godot 4.3+ e aperte F5.
@@ -42,6 +52,8 @@ Abra a pasta no Godot 4.3+ e aperte F5.
 | Atacar (segurar = carregado) | X / Quadrado | J |
 | Rolar | B / Círculo | Espaço |
 | Habilidade do pet | RB / R1 | R |
+| Interagir / falar | A / Cross | E |
+| Roda de armas (segurar) | LB / L1 | Q |
 
 Linha de comando (o binário do Godot precisa estar no PATH como `godot`):
 
@@ -55,6 +67,10 @@ godot --headless --path . --export-release "Web" build/web/index.html
 
 Antes do primeiro export, crie `build/.gdignore` (vazio) para o Godot não importar a própria saída.
 O build web precisa ser servido por HTTP (ex.: `python -m http.server` dentro de `build/web`).
+
+Builds de debug aceitam `--map=<id>` (e `--pets=all`) para começar direto num mapa:
+`casa`, `vila`, `casa_da_vo`, `dark_forest`, `bosque`, `pantano`, `cemiterio`.
+Rodar só alguns testes: `TEST_FILTER=world,enemies godot --headless --path . -s tests/run_tests.gd`.
 
 ## Estrutura
 
@@ -100,3 +116,4 @@ variável `ITCH_TARGET` (`usuario/my-granny-needs-tea:html5`).
 ## Créditos
 
 Arte: [Kenney](https://kenney.nl) — Tiny Town, Tiny Dungeon, Tiny Farm, Tiny Battle (CC0).
+Fonte: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) (SIL OFL, `assets/fonts/OFL.txt`).

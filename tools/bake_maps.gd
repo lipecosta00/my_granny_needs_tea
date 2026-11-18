@@ -31,10 +31,11 @@ const ROUND := [Vector2(-6, -3), Vector2(6, -3), Vector2(6, 7), Vector2(-6, 7)]
 const NINE_SLICE := {
 	"=": [Src.TOWN, Vector2i(0, 1)],     # dirt path
 	"T": [Src.TOWN, Vector2i(9, 0)],     # autumn forest mass
+	"F": [Src.TOWN, Vector2i(6, 0)],     # green forest mass (Bosque)
 	"~": [Src.BATTLE, Vector2i(0, 1)],   # lake with grass rim
 }
 ## Terrains whose cells collide (all 9 slices).
-const SOLID_TERRAINS := ["T", "~"]
+const SOLID_TERRAINS := ["T", "F", "~"]
 
 ## Single props: char -> [source, coords, collision, tall(2 tiles: coords is the trunk)]
 const PROPS := {
@@ -46,6 +47,12 @@ const PROPS := {
 	"r": [Src.FARM, Vector2i(5, 7), ROUND, false],   # rock
 	"s": [Src.TOWN, Vector2i(11, 6), ROUND, false],  # sign
 	"\"": [Src.FARM, Vector2i(8, 6), [], false],     # tall grass (placeholder art)
+	"t": [Src.DUNGEON, Vector2i(5, 5), ROUND, false],  # tombstone
+	"x": [Src.DUNGEON, Vector2i(4, 5), ROUND, false],  # cross grave
+	"f": [Src.DUNGEON, Vector2i(5, 6), FULL, false],   # iron fence
+	"w": [Src.TOWN, Vector2i(9, 6), ROUND, false],     # wooden fence
+	"k": [Src.DUNGEON, Vector2i(3, 5), FULL, false],   # bookshelf
+	"n": [Src.DUNGEON, Vector2i(0, 6), ROUND, false],  # table
 }
 ## Enemy spawn markers: char -> EnemyCatalog id (ground under them is grass).
 const ENEMIES := {
@@ -62,22 +69,99 @@ const GRASS := [Src.TOWN, Vector2i(0, 0)]
 const GRASS_TUFT := [Src.TOWN, Vector2i(1, 0)]
 const FLOWERS := [Src.TOWN, Vector2i(2, 0)]
 
+## Interior and village pieces.
+const FLOOR := [Src.DUNGEON, Vector2i(0, 4)]
+const FLOOR_ALT := [Src.DUNGEON, Vector2i(1, 4)]
+const WALL := [Src.DUNGEON, Vector2i(10, 4)]
+const DOOR := [Src.DUNGEON, Vector2i(9, 3)]
+
+## Houses (village): char at the stamp's top-left; 3x3 cells; [cols][rows]
+## of Tiny Town coords. The middle of the bottom row is the door (walkable).
+const STAMPS := {
+	"P": [[Vector2i(0, 4), Vector2i(1, 4), Vector2i(2, 4)],
+		[Vector2i(0, 5), Vector2i(1, 5), Vector2i(2, 5)],
+		[Vector2i(0, 7), Vector2i(1, 7), Vector2i(0, 7)]],  # player's house
+	"V": [[Vector2i(0, 4), Vector2i(1, 4), Vector2i(2, 4)],
+		[Vector2i(0, 5), Vector2i(1, 5), Vector2i(2, 5)],
+		[Vector2i(4, 7), Vector2i(5, 7), Vector2i(4, 7)]],  # granny's house
+	"H": [[Vector2i(4, 4), Vector2i(5, 4), Vector2i(6, 4)],
+		[Vector2i(4, 5), Vector2i(5, 5), Vector2i(6, 5)],
+		[Vector2i(4, 7), Vector2i(5, 7), Vector2i(4, 7)]],  # neighbours
+}
+const STAMP_DOOR_TILES := [Vector2i(1, 7), Vector2i(5, 7)]
+
+## Map specs. Cells are in tiles. Exits: rect + target map/spawn. Spawns:
+## named arrival points (Default = '@' in the layout).
 const MAPS := [
 	{
-		"name": "DarkForest",
-		"layout": "res://src/world/maps/dark_forest/dark_forest.layout.txt",
-		"out": "res://src/world/maps/dark_forest/dark_forest.tscn",
+		"id": &"casa", "name": "Casa", "interior": true,
+		"tint": Color(0.95, 0.88, 0.8),
+		"spawns": {"from_vila": Vector2i(6, 6)},
+		"exits": [{"rect": Rect2i(6, 8, 1, 1), "map": &"vila", "spawn": &"from_casa"}],
+		"npcs": [{"kind": "npc", "node": "Mom", "cell": Vector2i(8, 4), "name": "Mãe", "region": Rect2(48, 128, 16, 16),
+			"lines": ["Bom dia, dorminhoco!",
+				"Sua vó ligou. Disse que precisa de ajuda com um tal de \"chazinho\".",
+				"A casa dela é aquela meio... assombrada, do outro lado da vila. Leva um casaco!"]}],
+	},
+	{
+		"id": &"vila", "name": "Vila",
+		"tint": Color(0.62, 0.55, 0.72),
+		"spawns": {"from_casa": Vector2i(5, 10), "from_vo": Vector2i(22, 8), "from_floresta": Vector2i(14, 2)},
+		"exits": [
+			{"rect": Rect2i(5, 8, 1, 1), "map": &"casa", "spawn": &"from_vila"},
+			{"rect": Rect2i(22, 6, 1, 1), "map": &"casa_da_vo", "spawn": &"from_vila"},
+			{"rect": Rect2i(13, 0, 4, 1), "map": &"dark_forest", "spawn": &"from_vila"},
+		],
+	},
+	{
+		"id": &"casa_da_vo", "name": "CasaDaVo", "interior": true,
+		"tint": Color(0.82, 0.74, 0.92),
+		"spawns": {"from_vila": Vector2i(6, 7)},
+		"exits": [{"rect": Rect2i(6, 9, 1, 1), "map": &"vila", "spawn": &"from_vo"}],
+		"npcs": [{"kind": "granny", "node": "Granny", "cell": Vector2i(9, 4), "name": "Vó", "region": Rect2(0, 112, 16, 16)}],
+		"cauldron": Vector2i(7, 3),
+	},
+	{
+		"id": &"dark_forest", "name": "DarkForest",
 		"tint": Color(0.42, 0.36, 0.58),
-		# PetGates: rect in cells. Darkness on the west exit to the Bosque
-		# dos Cogumelos, cleared by the Vagalume's Luz (GDD "Mundo").
+		"spawns": {"from_vila": Vector2i(23, 31), "from_bosque": Vector2i(4, 16),
+			"from_pantano": Vector2i(43, 16), "from_cemiterio": Vector2i(23, 4)},
+		"exits": [
+			{"rect": Rect2i(21, 33, 6, 1), "map": &"vila", "spawn": &"from_floresta"},
+			{"rect": Rect2i(0, 15, 1, 4), "map": &"bosque", "spawn": &"from_floresta"},
+			{"rect": Rect2i(47, 15, 1, 4), "map": &"pantano", "spawn": &"from_floresta"},
+			{"rect": Rect2i(21, 0, 6, 1), "map": &"cemiterio", "spawn": &"from_floresta"},
+		],
+		# Darkness on the way to the Bosque (Luz), fence before the cemetery (Túnel).
 		"gates": [
 			{"id": &"dark_forest/bosque_darkness", "ability": &"light", "rect": Rect2i(0, 15, 3, 4)},
+			{"id": &"dark_forest/cemetery_fence", "ability": &"tunnel", "rect": Rect2i(21, 1, 6, 1)},
 		],
-		# Chests: weapon rewards. The staff moves to the Bosque in 4d.
-		"chests": [
-			{"id": &"dark_forest/secret_clearing", "cell": Vector2i(39, 6), "item": &"axe"},
-			{"id": &"dark_forest/staff_temp", "cell": Vector2i(42, 14), "item": &"staff"},
-		],
+		"chests": [{"id": &"dark_forest/secret_clearing", "cell": Vector2i(39, 6), "item": &"axe"}],
+	},
+	{
+		"id": &"bosque", "name": "Bosque",
+		"tint": Color(0.3, 0.3, 0.46),
+		"spawns": {"from_floresta": Vector2i(32, 12)},
+		"exits": [{"rect": Rect2i(35, 11, 1, 4), "map": &"dark_forest", "spawn": &"from_bosque"}],
+		"items": [{"id": &"bosque/cogumelo", "cell": Vector2i(5, 5), "item": &"cogumelo"}],
+		"chests": [{"id": &"bosque/staff", "cell": Vector2i(20, 21), "item": &"staff"}],
+	},
+	{
+		"id": &"pantano", "name": "Pantano",
+		"tint": Color(0.38, 0.46, 0.42),
+		"spawns": {"from_floresta": Vector2i(3, 12)},
+		"exits": [{"rect": Rect2i(0, 11, 1, 4), "map": &"dark_forest", "spawn": &"from_pantano"}],
+		"gates": [{"id": &"pantano/canal_bridge", "ability": &"bridge", "rect": Rect2i(17, 12, 3, 2)}],
+		"items": [{"id": &"pantano/musgo", "cell": Vector2i(30, 6), "item": &"musgo"}],
+	},
+	{
+		"id": &"cemiterio", "name": "Cemiterio",
+		"tint": Color(0.3, 0.3, 0.5),
+		"spawns": {"from_floresta": Vector2i(17, 22)},
+		"exits": [{"rect": Rect2i(16, 25, 4, 1), "map": &"dark_forest", "spawn": &"from_cemiterio"}],
+		# Temporary: the osso drops from the Coveiro in Milestone 5.
+		"items": [{"id": &"cemiterio/osso", "cell": Vector2i(17, 6), "item": &"osso"}],
 	},
 ]
 
@@ -88,6 +172,11 @@ const MAPS := [
 const GAME_MAP_SCRIPT := "res://src/world/game_map.gd"
 const PET_GATE_SCRIPT := "res://src/world/pet_gate.gd"
 const CHEST_SCRIPT := "res://src/world/chest.gd"
+const EXIT_SCRIPT := "res://src/world/map_exit.gd"
+const NPC_SCRIPT := "res://src/world/npc.gd"
+const GRANNY_SCRIPT := "res://src/world/granny.gd"
+const CAULDRON_SCRIPT := "res://src/world/cauldron.gd"
+const ITEM_SCRIPT := "res://src/world/quest_item.gd"
 const DEFAULT_SPAWN := "Default"  # GameMap.DEFAULT_SPAWN
 
 
@@ -103,7 +192,11 @@ func _run() -> void:
 		quit(1)
 		return
 	tileset = load(TILESET_PATH)
-	for spec: Dictionary in MAPS:
+	for map_spec: Dictionary in MAPS:
+		var spec := map_spec.duplicate()
+		var dir := "res://src/world/maps/%s/" % spec.id
+		spec.layout = dir + "%s.layout.txt" % spec.id
+		spec.out = dir + "%s.tscn" % spec.id
 		err = bake_map(spec, tileset)
 		if err != OK:
 			quit(1)
@@ -151,6 +244,14 @@ func build_tileset() -> TileSet:
 	_add_tile(ts, GRASS, [])
 	_add_tile(ts, GRASS_TUFT, [])
 	_add_tile(ts, FLOWERS, [])
+	_add_tile(ts, FLOOR, [])
+	_add_tile(ts, FLOOR_ALT, [])
+	_add_tile(ts, WALL, FULL)
+	_add_tile(ts, DOOR, [])
+	for stamp: Array in STAMPS.values():
+		for row: Array in stamp:
+			for coords: Vector2i in row:
+				_add_tile(ts, [Src.TOWN, coords], [] if coords in STAMP_DOOR_TILES else FULL)
 	for terrain: String in NINE_SLICE:
 		var src: int = NINE_SLICE[terrain][0]
 		var origin: Vector2i = NINE_SLICE[terrain][1]
@@ -224,13 +325,18 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 		for x in rows[y].length():
 			var ch := rows[y][x]
 			var cell := Vector2i(x, y)
-			_paint_ground(ground, rows, cell, ch)
-			if PROPS.has(ch):
+			_paint_ground(ground, rows, cell, ch, spec.get("interior", false))
+			if STAMPS.has(ch):
+				var stamp: Array = STAMPS[ch]
+				for sy in stamp.size():
+					for sx in stamp[sy].size():
+						_put(objects, cell + Vector2i(sx, sy), [Src.TOWN, stamp[sy][sx]])
+			elif PROPS.has(ch):
 				_put(objects, cell, [PROPS[ch][0], PROPS[ch][1]])
 				if PROPS[ch][3]:
 					_put(objects, cell + Vector2i.UP, [PROPS[ch][0], PROPS[ch][1] + Vector2i.UP])
-			elif ch == "T":
-				_put(objects, cell, _nine_slice("T", rows, cell))
+			elif ch == "T" or ch == "F":
+				_put(objects, cell, _nine_slice(ch, rows, cell))
 			elif ch == "@":
 				spawn = cell
 			elif ENEMIES.has(ch):
@@ -243,6 +349,12 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 	default_spawn.name = DEFAULT_SPAWN
 	default_spawn.position = _feet_position(spawn)
 	_own(root, spawns, default_spawn)
+	var named_spawns: Dictionary = spec.get("spawns", {})
+	for spawn_name: String in named_spawns:
+		var marker := Marker2D.new()
+		marker.name = spawn_name
+		marker.position = _feet_position(named_spawns[spawn_name])
+		_own(root, spawns, marker)
 	if not enemy_cells.is_empty():
 		var enemies := Node2D.new()
 		enemies.name = "Enemies"
@@ -261,6 +373,45 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 		chest.item = chest_spec.item
 		chest.position = _feet_position(chest_spec.cell)
 		_own(root, world, chest)
+
+	for npc_spec: Dictionary in spec.get("npcs", []):
+		var script_path := GRANNY_SCRIPT if npc_spec.kind == "granny" else NPC_SCRIPT
+		var npc: StaticBody2D = load(script_path).new()
+		npc.name = npc_spec.node  # ASCII node name; npc_name is what players read
+		npc.npc_name = npc_spec.name
+		npc.sprite_region = npc_spec.region
+		npc.lines = PackedStringArray(npc_spec.get("lines", []))
+		npc.position = _feet_position(npc_spec.cell)
+		_own(root, world, npc)
+
+	if spec.has("cauldron"):
+		var cauldron: StaticBody2D = load(CAULDRON_SCRIPT).new()
+		cauldron.name = "Cauldron"
+		cauldron.position = _feet_position(spec.cauldron)
+		_own(root, world, cauldron)
+
+	for item_spec: Dictionary in spec.get("items", []):
+		var item: Node2D = load(ITEM_SCRIPT).new()
+		item.name = "Item_" + String(item_spec.item).to_pascal_case()
+		item.pickup_id = item_spec.id
+		item.item = item_spec.item
+		item.position = _feet_position(item_spec.cell)
+		_own(root, world, item)
+
+	var exit_specs: Array = spec.get("exits", [])
+	if not exit_specs.is_empty():
+		var exits := Node2D.new()
+		exits.name = "Exits"
+		_own(root, root, exits)
+		for exit_spec: Dictionary in exit_specs:
+			var exit: Node2D = load(EXIT_SCRIPT).new()
+			exit.name = "To_" + String(exit_spec.map).to_pascal_case()
+			exit.target_map = exit_spec.map
+			exit.target_spawn = exit_spec.spawn
+			var rect: Rect2i = exit_spec.rect
+			exit.position = Vector2(rect.position * TILE)
+			exit.size = Vector2(rect.size * TILE)
+			_own(root, exits, exit)
 
 	var gate_specs: Array = spec.get("gates", [])
 	if not gate_specs.is_empty():
@@ -300,7 +451,17 @@ func _feet_position(cell: Vector2i) -> Vector2:
 	return Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE - 2.0)
 
 
-func _paint_ground(ground: TileMapLayer, rows: PackedStringArray, cell: Vector2i, ch: String) -> void:
+func _paint_ground(ground: TileMapLayer, rows: PackedStringArray, cell: Vector2i, ch: String, interior := false) -> void:
+	match ch:
+		"W":
+			_put(ground, cell, WALL)
+			return
+		"D":
+			_put(ground, cell, DOOR)
+			return
+	if interior:
+		_put(ground, cell, FLOOR_ALT if hash(cell) % 9 == 0 else FLOOR)
+		return
 	match ch:
 		"=", "~":
 			_put(ground, cell, _nine_slice(ch, rows, cell))

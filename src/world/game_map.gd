@@ -6,6 +6,9 @@ extends Node2D
 
 const DEFAULT_SPAWN := &"Default"
 
+## A MapExit was crossed (Game fades to the target map).
+signal exit_requested(target_map: StringName, target_spawn: StringName)
+
 @export var ground: TileMapLayer
 ## Y-sorted layer where actors (hero, souls, enemies) are placed.
 @export var actors: Node2D
@@ -15,6 +18,11 @@ const DEFAULT_SPAWN := &"Default"
 func _ready() -> void:
 	_build_edge_walls(get_bounds())
 	_spawn_enemies()
+	var exits := get_node_or_null(^"Exits")
+	if exits:
+		for exit: MapExit in exits.get_children():
+			exit.triggered.connect(func(map_id: StringName, spawn: StringName) -> void:
+				exit_requested.emit(map_id, spawn))
 
 
 ## Markers under Spawns/Enemies carry metadata "enemy" = catalog id. Enemies

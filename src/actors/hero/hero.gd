@@ -147,7 +147,7 @@ func revive() -> void:
 # --- States ----------------------------------------------------------------
 
 func _state_move(delta: float) -> void:
-	if input_enabled and input.is_held(&"weapon_wheel") and not owned_weapons.is_empty():
+	if _accepts_input() and input.is_held(&"weapon_wheel") and not owned_weapons.is_empty():
 		_open_wheel()
 		return
 	var direction := _move_input()
@@ -451,7 +451,12 @@ func _set_state(new_state: State) -> void:
 
 
 func _move_input() -> Vector2:
-	return input.move_vector() if input_enabled else Vector2.ZERO
+	return input.move_vector() if _accepts_input() else Vector2.ZERO
+
+
+## Off during cutscenes, map changes and dialogue (and just after it).
+func _accepts_input() -> bool:
+	return input_enabled and not Dialogue.blocks_input()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -460,7 +465,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _collect_buffered_input() -> void:
 	var presses := input.take_presses()
-	if not input_enabled:
+	if not _accepts_input():
 		return
 	for action in presses:
 		if state == State.WHEEL:

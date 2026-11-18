@@ -18,6 +18,8 @@ config/features=PackedStringArray("4.3", "GL Compatibility")
 
 Settings="*res://src/autoload/settings.gd"
 GameState="*res://src/autoload/game_state.gd"
+SaveSystem="*res://src/autoload/save_system.gd"
+Dialogue="*res://src/autoload/dialogue.gd"
 Fx="*res://src/autoload/fx.gd"
 
 [display]
@@ -118,6 +120,8 @@ pet_ability={
 2d_physics/layer_6="enemy_hurtbox"
 
 [rendering]
+
+environment/defaults/default_clear_color=Color(0.07, 0.04, 0.09, 1)
 
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"

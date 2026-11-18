@@ -3,6 +3,7 @@
 ##   godot --headless --path . -s tests/run_tests.gd
 ##
 ## Runs every tests/unit/test_*.gd; each test_* method is one case.
+## TEST_FILTER=hero_combat,fx runs only files whose name contains one of those.
 extends SceneTree
 
 const TEST_DIR := "res://tests/unit"
@@ -15,12 +16,16 @@ func _init() -> void:
 
 func _run() -> void:
 	root.get_node(^"Fx").sfx_enabled = false
+	root.get_node(^"SaveSystem").enabled = false  # never touch the player's save
 	var total := 0
 	var failed: PackedStringArray = []
 	var files := DirAccess.get_files_at(TEST_DIR)
 	files.sort()
 	for file in files:
 		if not (file.begins_with("test_") and file.ends_with(".gd")):
+			continue
+		var only := OS.get_environment("TEST_FILTER")
+		if only != "" and not Array(only.split(",")).any(func(part: String) -> bool: return part in file):
 			continue
 		var suite: Object = load(TEST_DIR.path_join(file)).new()
 		suite.tree = self

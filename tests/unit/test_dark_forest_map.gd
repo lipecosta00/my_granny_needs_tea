@@ -76,25 +76,47 @@ func test_spawn_is_walkable() -> void:
 	map.free()
 
 
-## GDD: "Todo portão é validado por script" — the Bosque (west) needs the
-## Vagalume's light; nothing else is gated in the hub yet.
+## GDD: "Todo portão é validado por script" — in the hub, the Bosque (west)
+## needs the Vagalume's light and the cemetery (north) the Toupeira's tunnel.
 func test_progression_gates() -> void:
 	var map := load(MAP_SCENE).instantiate() as GameMap
 	var without := _exits_reached(map, [])
-	assert_true(without.north and without.south and without.east, "open exits reachable")
+	assert_true(without.south and without.east, "village and swamp are open")
 	assert_false(without.west, "the bosque must require the Vagalume's light")
-	var with_light := _exits_reached(map, [&"light"])
-	assert_true(with_light.west, "light opens the way to the bosque")
+	assert_false(without.north, "the cemetery must require the Toupeira's tunnel")
+	var everything := _exits_reached(map, [&"light", &"tunnel"])
+	assert_true(everything.west and everything.north, "pets open the way")
 	map.free()
 
 
-func test_game_places_hero_in_map() -> void:
+func test_game_places_hero_and_pet_in_map() -> void:
+	GameState.reset()
+	GameState.unlock_pet(&"vagalume")
 	var game := load(GAME_SCENE).instantiate() as Game
+	game.use_save = false
+	game.start_map = &"dark_forest"
 	tree.root.add_child(game)
 	assert_true(game.current_map != null, "map not loaded")
 	assert_eq(game.hero.get_parent(), game.current_map.actors, "hero must live in the y-sorted layer")
 	assert_vec_almost(game.hero.global_position, game.current_map.get_spawn_position())
 	assert_eq(game.camera.target, game.hero)
-	assert_true(game.pet is Vagalume, "starts with the Vagalume")
+	assert_true(game.pet is Vagalume, "active pet comes along")
 	assert_eq(game.pet.get_parent(), game.current_map.actors, "pet lives with the hero")
-	game.free()
+	# queue_free + frames: an immediate free() can leave TileMapLayer
+	# collision in the physics space and break later tests.
+	game.queue_free()
+	for i in 3:
+		await tree.physics_frame
+	GameState.reset()
+
+
+func test_new_game_starts_at_home_without_pet() -> void:
+	GameState.reset()
+	var game := load(GAME_SCENE).instantiate() as Game
+	game.use_save = false
+	tree.root.add_child(game)
+	assert_eq(game.current_map_id, &"casa")
+	assert_eq(game.pet, null, "granny hands out the first pet")
+	game.queue_free()
+	for i in 3:
+		await tree.physics_frame

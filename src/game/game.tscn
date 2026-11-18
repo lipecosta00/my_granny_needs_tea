@@ -1,21 +1,22 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
-[ext_resource type="PackedScene" path="res://src/world/maps/dark_forest/dark_forest.tscn" id="2_forest"]
 [ext_resource type="PackedScene" path="res://src/actors/hero/hero.tscn" id="3_hero"]
 [ext_resource type="Script" path="res://src/core/follow_camera.gd" id="4_camera"]
 [ext_resource type="Script" path="res://src/ui/hearts_bar.gd" id="5_hearts"]
 [ext_resource type="Script" path="res://src/ui/pet_portrait.gd" id="6_portrait"]
 [ext_resource type="Script" path="res://src/ui/weapon_slots.gd" id="7_slots"]
+[ext_resource type="Script" path="res://src/ui/pet_select.gd" id="8_select"]
+[ext_resource type="Script" path="res://src/ui/quest_hud.gd" id="9_quest"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera", "hearts", "pet_portrait", "weapon_slots")]
+[node name="Game" type="Node" node_paths=PackedStringArray("hero", "camera", "hearts", "pet_portrait", "weapon_slots", "pet_select")]
 script = ExtResource("1_game")
-start_map = ExtResource("2_forest")
 hero = NodePath("Hero")
 camera = NodePath("Camera")
 hearts = NodePath("Hud/Hearts")
 pet_portrait = NodePath("Hud/PetPortrait")
 weapon_slots = NodePath("Hud/WeaponSlots")
+pet_select = NodePath("PetSelect")
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 
@@ -52,3 +53,15 @@ offset_top = 21.0
 offset_right = 66.0
 offset_bottom = 39.0
 script = ExtResource("7_slots")
+
+[node name="QuestHud" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 458.0
+offset_top = 4.0
+offset_right = 476.0
+offset_bottom = 22.0
+script = ExtResource("9_quest")
+
+[node name="PetSelect" type="CanvasLayer" parent="."]
+script = ExtResource("8_select")

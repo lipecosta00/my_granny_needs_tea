@@ -45,10 +45,26 @@ func add_trauma(amount: float) -> void:
 	_trauma = clampf(_trauma + amount, 0.0, 1.0)
 
 
-## Clamps the view to a map rectangle in world pixels.
+## Clamps the view to a map rectangle in world pixels. Maps smaller than the
+## screen (interiors) are centred instead of pinned to the top-left.
 func set_bounds(bounds: Rect2) -> void:
-	limit_left = int(bounds.position.x)
-	limit_top = int(bounds.position.y)
-	limit_right = int(bounds.end.x)
-	limit_bottom = int(bounds.end.y)
+	var view := Vector2(
+		ProjectSettings.get_setting("display/window/size/viewport_width", 480),
+		ProjectSettings.get_setting("display/window/size/viewport_height", 270))
+	var limits := FollowCamera.centered_limits(bounds, view)
+	limit_left = int(limits.position.x)
+	limit_top = int(limits.position.y)
+	limit_right = int(limits.end.x)
+	limit_bottom = int(limits.end.y)
 	reset_smoothing()
+
+
+static func centered_limits(bounds: Rect2, view: Vector2) -> Rect2:
+	var limits := bounds
+	if bounds.size.x < view.x:
+		limits.position.x = bounds.get_center().x - view.x / 2.0
+		limits.size.x = view.x
+	if bounds.size.y < view.y:
+		limits.position.y = bounds.get_center().y - view.y / 2.0
+		limits.size.y = view.y
+	return limits

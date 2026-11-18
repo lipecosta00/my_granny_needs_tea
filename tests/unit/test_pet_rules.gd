@@ -22,13 +22,13 @@ func test_pick_nearest_within_radius() -> void:
 
 func test_game_state_round_trip() -> void:
 	GameState.reset()
+	GameState.unlock_pet(&"vagalume")
 	GameState.open_gate(&"dark_forest/bosque_darkness")
 	var data := GameState.to_dict()
 	GameState.reset()
 	assert_false(GameState.is_gate_open(&"dark_forest/bosque_darkness"))
 	GameState.from_dict(data)
 	assert_true(GameState.is_gate_open(&"dark_forest/bosque_darkness"))
-	assert_eq(GameState.active_pet, &"vagalume")
 	GameState.reset()
 
 

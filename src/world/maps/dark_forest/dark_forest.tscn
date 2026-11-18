@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=4]
+[gd_scene load_steps=6 format=4]
 
 [ext_resource type="Script" path="res://src/world/game_map.gd" id="1_1"]
 [ext_resource type="TileSet" path="res://src/world/tiles/overworld_tileset.tres" id="2_2"]
 [ext_resource type="Script" path="res://src/world/pet_gate.gd" id="3_3"]
 [ext_resource type="Script" path="res://src/world/chest.gd" id="4_4"]
+[ext_resource type="Script" path="res://src/world/map_exit.gd" id="5_5"]
 
 [node name="DarkForest" type="Node2D" node_paths=PackedStringArray("ground", "actors", "spawns")]
 script = ExtResource("1_1")
@@ -27,6 +28,13 @@ gate_id = &"dark_forest/bosque_darkness"
 required_ability = &"light"
 size = Vector2(48, 64)
 
+[node name="CemeteryFence" type="StaticBody2D" parent="Gates"]
+position = Vector2(336, 16)
+script = ExtResource("3_3")
+gate_id = &"dark_forest/cemetery_fence"
+required_ability = &"tunnel"
+size = Vector2(96, 16)
+
 [node name="World" type="Node2D" parent="."]
 y_sort_enabled = true
 
@@ -41,16 +49,22 @@ script = ExtResource("4_4")
 chest_id = &"dark_forest/secret_clearing"
 item = &"axe"
 
-[node name="Chest_StaffTemp" type="StaticBody2D" parent="World"]
-position = Vector2(680, 238)
-script = ExtResource("4_4")
-chest_id = &"dark_forest/staff_temp"
-item = &"staff"
-
 [node name="Spawns" type="Node2D" parent="."]
 
 [node name="Default" type="Marker2D" parent="Spawns"]
 position = Vector2(376, 478)
+
+[node name="from_vila" type="Marker2D" parent="Spawns"]
+position = Vector2(376, 510)
+
+[node name="from_bosque" type="Marker2D" parent="Spawns"]
+position = Vector2(72, 270)
+
+[node name="from_pantano" type="Marker2D" parent="Spawns"]
+position = Vector2(696, 270)
+
+[node name="from_cemiterio" type="Marker2D" parent="Spawns"]
+position = Vector2(376, 78)
 
 [node name="Enemies" type="Node2D" parent="Spawns"]
 
@@ -73,3 +87,33 @@ metadata/enemy = &"spider"
 [node name="spider_33_27" type="Marker2D" parent="Spawns/Enemies"]
 position = Vector2(536, 446)
 metadata/enemy = &"spider"
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="To_Vila" type="Node2D" parent="Exits"]
+position = Vector2(336, 528)
+script = ExtResource("5_5")
+target_map = &"vila"
+target_spawn = &"from_floresta"
+size = Vector2(96, 16)
+
+[node name="To_Bosque" type="Node2D" parent="Exits"]
+position = Vector2(0, 240)
+script = ExtResource("5_5")
+target_map = &"bosque"
+target_spawn = &"from_floresta"
+size = Vector2(16, 64)
+
+[node name="To_Pantano" type="Node2D" parent="Exits"]
+position = Vector2(752, 240)
+script = ExtResource("5_5")
+target_map = &"pantano"
+target_spawn = &"from_floresta"
+size = Vector2(16, 64)
+
+[node name="To_Cemiterio" type="Node2D" parent="Exits"]
+position = Vector2(336, 0)
+script = ExtResource("5_5")
+target_map = &"cemiterio"
+target_spawn = &"from_floresta"
+size = Vector2(96, 16)

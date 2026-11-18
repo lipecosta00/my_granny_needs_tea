@@ -9,6 +9,26 @@ const SCENES := {
 }
 
 
+## Text for the cauldron's pet screen (GDD "Pets").
+const INFO := {
+	&"vagalume": {
+		"name": "Vagalume", "color": Color(1, 0.88, 0.35),
+		"combat": "Clarão: atordoa quem está perto.",
+		"explore": "Luz: dissipa a escuridão.",
+	},
+	&"barqueira": {
+		"name": "Barqueira", "color": Color(0.45, 0.72, 1),
+		"combat": "Remo: puxa inimigos à frente.",
+		"explore": "Ponte: atravessa o canal.",
+	},
+	&"toupeira": {
+		"name": "Toupeira", "color": Color(0.58, 0.78, 0.36),
+		"combat": "Tremor: atordoa em linha.",
+		"explore": "Túnel: passa sob grades.",
+	},
+}
+
+
 static func instantiate(id: StringName) -> Pet:
 	var scene: PackedScene = SCENES.get(id)
 	if scene == null:
