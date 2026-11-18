@@ -19,6 +19,9 @@ const SOURCES := {
 	Src.DUNGEON: "res://assets/kenney/tiny_dungeon/tilemap_packed.png",
 }
 
+## Alternative tile id for walkable water under a bridge gate.
+const BRIDGE_WATER_ALT := 1
+
 ## Collision presets, in tile-local pixels (origin = tile centre).
 const FULL := [Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8)]
 const TRUNK := [Vector2(-4, 0), Vector2(4, 0), Vector2(4, 8), Vector2(-4, 8)]
@@ -155,6 +158,12 @@ func build_tileset() -> TileSet:
 		for y in 3:
 			for x in 3:
 				_add_tile(ts, [src, origin + Vector2i(x, y)], shape)
+				if terrain == "~":
+					# Alternative 1: same water, no collision — painted under
+					# mist-bridge gates, which block until the bridge is made.
+					var atlas := ts.get_source(src) as TileSetAtlasSource
+					if not atlas.has_alternative_tile(origin + Vector2i(x, y), BRIDGE_WATER_ALT):
+						atlas.create_alternative_tile(origin + Vector2i(x, y), BRIDGE_WATER_ALT)
 	for ch: String in PROPS:
 		var prop: Array = PROPS[ch]
 		_add_tile(ts, [prop[0], prop[1]], prop[2])
@@ -267,6 +276,10 @@ func bake_map(spec: Dictionary, tileset: TileSet) -> Error:
 			gate.position = Vector2(rect.position * TILE)
 			gate.size = Vector2(rect.size * TILE)
 			_own(root, gates, gate)
+			if gate_spec.ability == &"bridge":
+				_make_bridge_water_walkable(ground, rect)
+		# Under the actors: the hero walks over bridges and tunnels.
+		root.move_child(gates, world.get_index())
 
 	root.ground = ground
 	root.actors = world
@@ -320,6 +333,14 @@ func _nine_slice(terrain: String, rows: PackedStringArray, cell: Vector2i, alias
 	elif not same.call(cell + Vector2i.DOWN):
 		row = 2
 	return [NINE_SLICE[terrain][0], NINE_SLICE[terrain][1] + Vector2i(col, row)]
+
+
+func _make_bridge_water_walkable(ground: TileMapLayer, rect: Rect2i) -> void:
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			var cell := Vector2i(x, y)
+			if ground.get_cell_source_id(cell) == Src.BATTLE:
+				ground.set_cell(cell, Src.BATTLE, ground.get_cell_atlas_coords(cell), BRIDGE_WATER_ALT)
 
 
 func _put(layer: TileMapLayer, cell: Vector2i, ref: Array) -> void:

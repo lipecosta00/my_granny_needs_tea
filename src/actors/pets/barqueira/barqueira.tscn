@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://src/actors/pets/pet_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://src/actors/pets/barqueira/barqueira.gd" id="2_script"]
+
+[node name="Barqueira" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+pet_id = &"barqueira"
+display_name = "Barqueira"
+color = Color(0.45, 0.72, 1, 1)
+exploration_ability = &"bridge"
+attack_interval = 1.5

@@ -76,6 +76,18 @@ func can_deal_contact_damage() -> bool:
 	return not _dead and not is_stunned() and _hurt_for <= 0.0
 
 
+## Pet utility: move an enemy without damage (Remo pull). Bypasses the
+## crab's shell on purpose — the GDD lists the Remo as the crab's answer.
+func displace(push: Vector2, stun_time := 0.0, wall_stun := false) -> void:
+	if _dead:
+		return
+	velocity = push * (1.0 - knockback_resistance)
+	_hurt_for = hurt_time
+	_wall_stun_armed = wall_stun
+	if stun_time > 0.0:
+		stun(stun_time)
+
+
 ## True if the last move_and_slide hit level geometry (tiles, walls), not a
 ## character: bumping into the hero or another enemy is not a "wall".
 func hit_world() -> bool:

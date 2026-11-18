@@ -68,15 +68,24 @@ func _process(delta: float) -> void:
 			if pet.find_openable_gate() == self:
 				target_hint = 1.0
 	_hint = move_toward(_hint, target_hint, delta * 3.0)
-	if _fade > 0.0:
-		queue_redraw()
+	queue_redraw()
 
 
 func _draw() -> void:
+	match required_ability:
+		&"bridge":
+			_draw_bridge()
+		&"tunnel":
+			_draw_fence()
+		_:
+			_draw_darkness()
+	_draw_hint()
+
+
+## Living darkness: overlapping blobs that breathe.
+func _draw_darkness() -> void:
 	if _fade <= 0.0:
 		return
-	# Living darkness: overlapping blobs that breathe; sparkles hint that the
-	# active pet can clear it (GDD: brilho avisa quando o pet certo está perto).
 	var step := 10.0
 	var i := 0
 	var y := 0.0
@@ -88,9 +97,49 @@ func _draw() -> void:
 			x += step
 			i += 1
 		y += step
-	if _hint > 0.0:
-		for k in 6:
-			var t := _clock * 1.5 + k * 1.05
-			var p := Vector2(fposmod(sin(t * 0.7 + k) * 0.5 + 0.5, 1.0) * size.x,
-				fposmod(t * 12.0 + k * 9.0, size.y))
-			draw_circle(p, 1.5, Color(1.0, 0.9, 0.4, _hint * _fade))
+
+
+## Water stays visible below; once open, planks of mist span it.
+func _draw_bridge() -> void:
+	var planks := 1.0 - _fade
+	if planks <= 0.0:
+		return
+	var horizontal := size.x >= size.y
+	var count := int((size.x if horizontal else size.y) / 6.0)
+	for k in count:
+		var t := k * 6.0
+		var rect := Rect2(t, 2, 5, size.y - 4) if horizontal else Rect2(2, t, size.x - 4, 5)
+		var shimmer := 0.55 + 0.15 * sin(_clock * 2.0 + k)
+		draw_rect(rect, Color(0.8, 0.9, 1.0, shimmer * planks))
+
+
+## Iron fence; once tunnelled, a dirt hole opens under it.
+func _draw_fence() -> void:
+	var bar_color := Color(0.3, 0.3, 0.38)
+	var gap_center := size.x / 2.0
+	var x := 2.0
+	while x < size.x:
+		var in_gap := absf(x - gap_center) < 9.0 and _fade < 1.0
+		if not in_gap:
+			draw_rect(Rect2(x, 0, 2, size.y), bar_color)
+		x += 5.0
+	draw_rect(Rect2(0, 2, size.x, 2), bar_color)
+	if _fade < 1.0:
+		var hole := Color(0.12, 0.08, 0.05, 1.0 - _fade)
+		draw_set_transform(Vector2(gap_center, size.y / 2.0), 0.0, Vector2(1.0, 0.6))
+		draw_circle(Vector2.ZERO, 8.0, hole)
+		draw_set_transform(Vector2.ZERO)
+	else:
+		# Mound of loose earth marks where the Toupeira can dig.
+		draw_circle(Vector2(gap_center, size.y - 2), 5.0, Color(0.45, 0.32, 0.2))
+
+
+## Sparkles when the active pet can open this gate.
+func _draw_hint() -> void:
+	if _hint <= 0.0 or is_open:
+		return
+	for k in 6:
+		var t := _clock * 1.5 + k * 1.05
+		var p := Vector2(fposmod(sin(t * 0.7 + k) * 0.5 + 0.5, 1.0) * size.x,
+			fposmod(t * 12.0 + k * 9.0, size.y))
+		draw_circle(p, 1.5, Color(1.0, 0.9, 0.4, _hint))

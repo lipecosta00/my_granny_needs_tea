@@ -100,10 +100,11 @@ func _physics_process(delta: float) -> void:
 	if target:
 		var toward_hero := (hero.global_position - target.global_position).normalized()
 		goal = clamp_to_leash(target.global_position + toward_hero * 20.0, hero.global_position, leash_radius)
-	var to_goal := goal - global_position
-	var desired := to_goal.normalized() * minf(max_speed, to_goal.length() * steering)
-	velocity = velocity.lerp(desired, 1.0 - exp(-10.0 * delta))
-	global_position += velocity * delta
+	if not _custom_motion(delta):
+		var to_goal := goal - global_position
+		var desired := to_goal.normalized() * minf(max_speed, to_goal.length() * steering)
+		velocity = velocity.lerp(desired, 1.0 - exp(-10.0 * delta))
+		global_position += velocity * delta
 
 	if target:
 		_attack_timer -= delta
@@ -160,6 +161,19 @@ func _auto_attack(_target: Node2D) -> void:
 
 func _combat_ability() -> void:
 	pass
+
+
+## Return true when the subclass moved the pet itself this frame (bites).
+func _custom_motion(_delta: float) -> bool:
+	return false
+
+
+func _enemies() -> Array[Enemy]:
+	var result: Array[Enemy] = []
+	for enemy: Enemy in get_tree().get_nodes_in_group(&"enemies"):
+		if not enemy.is_queued_for_deletion() and not enemy.health.is_dead():
+			result.append(enemy)
+	return result
 
 
 # --- Pure helpers (unit-tested) ------------------------------------------------
